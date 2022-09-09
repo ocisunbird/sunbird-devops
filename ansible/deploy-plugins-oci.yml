@@ -26,7 +26,7 @@
         - preview
 
     - name: upload batch
-      command: "oci os object bulk-upload -bn {{ plugin_container_name }} --prefix {{ folder_name }}/ --src-dir {{ source_name }}"
+      command: "oci os object bulk-upload -bn {{ plugin_container_name }} --prefix {{ folder_name }}/ --src-dir {{ source_name }} --content-type auto"
       async: 3600
       poll: 10
       tags:
