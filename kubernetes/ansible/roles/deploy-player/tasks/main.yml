@@ -30,7 +30,7 @@
     dest: "{{role_path}}/templates/{{ release_name }}.env"
 
 - name: create configmap
-  shell: "kubectl create configmap player-config --from-env-file={{role_path}}/templates/{{ release_name }}.env -n {{namespace}} --dry-run=client -o=yaml | kubectl apply -f -"
+  shell: "kubectl create configmap player-config --from-env-file={{role_path}}/templates/{{ release_name }}.env -n {{namespace}} --dry-run=client -o=yaml"
 
 - name: Load role to decrypt private keys, copy to helm chart and encrypt private keys
   include_role:
@@ -48,7 +48,7 @@
   loop_control:
     loop_var: outer_item
 
-- name: Create the token pubic key file
+- name: Create the token public key file
   copy:
     dest: "{{ chart_path }}/keys/{{ adminutil_refresh_token_public_key_kid }}"
     content: "{{ core_vault_sunbird_sso_publickey }}"
@@ -74,8 +74,9 @@
   delay: 30
 
 - name: Get deployed image name
-  shell: kubectl get deployments.apps {{ release_name }} -o json -n {{ namespace }} | jq -r '.spec.template.spec.containers[0].image | split("/")[1]' 
+  shell: kubectl get deployments.apps {{ release_name }} -o json -n {{ namespace }} | jq -r '.spec.template.spec.containers[0].image | split("/")[-1]' 
   register: deployed_image
+
 
 - set_fact:
    metadata_image: "{{ image_name }}:{{ image_tag }}"
