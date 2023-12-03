@@ -2716,14 +2716,14 @@ if(client_id.toLowerCase() === 'android'){
     toggleGoogleSignInBtn();
 
     var error_message = (new URLSearchParams(window.location.search)).get('error_message');
-    console.log('before error_message parse => ', error_message); // TODO: log!
+    //console.log('before error_message parse => ', error_message); // TODO: log!
     if (error_message) error_message = stringToHTML(error_message);
-    console.log('after error_message parse => ', error_message); // TODO: log!`
+    //console.log('after error_message parse => ', error_message); // TODO: log!`
 
     var success_message = (new URLSearchParams(window.location.search)).get('success_message');
-    console.log('before success_message parse => ', success_message); // TODO: log!
+    //console.log('before success_message parse => ', success_message); // TODO: log!
     if (success_message) success_message = stringToHTML(success_message);
-    console.log('after success_message parse => ', success_message); // TODO: log!`
+    //console.log('after success_message parse => ', success_message); // TODO: log!`
 
     if(error_message){
         var error_msg = document.getElementById('error-msg');
