@@ -91,11 +91,11 @@
   - {dest: '{{ keycloak_home }}/themes/{{ tenant_name }}/email/messages', mode: '0755'}
   - {dest: '{{ keycloak_home }}/themes/{{ tenant_name }}/email/text', mode: '0755'}
 
-- name: Copy login theme
-  copy:
-    src: "{{ login_theme }}/"
-    dest: "{{ keycloak_home }}/themes/{{ tenant_name }}/login/"
-    force: "yes"
+#- name: Copy login theme
+#  copy:
+#    src: "{{ login_theme }}/"
+#    dest: "{{ keycloak_home }}/themes/{{ tenant_name }}/login/"
+#    force: "yes"
     
 - name: Copy sunbird login theme
   copy:
@@ -103,11 +103,11 @@
     dest: "{{ keycloak_home }}/themes/sunbird/login/"
     force: "yes"
 
-- name: Copy email theme
-  copy:
-    src: "{{ email_theme }}/"
-    dest: "{{ keycloak_home }}/themes/{{ tenant_name }}/email/"
-    force: true
+#- name: Copy email theme
+#  copy:
+#    src: "{{ email_theme }}/"
+#    dest: "{{ keycloak_home }}/themes/{{ tenant_name }}/email/"
+#    force: true
 
 - name: change directory ownership
   file: 
