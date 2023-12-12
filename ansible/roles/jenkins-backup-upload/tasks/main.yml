@@ -50,3 +50,15 @@
     local_file_or_folder_path: "/tmp/{{ LATEST_BACKUP_DIR.stdout }}.zip"
   when: cloud_service_provider == "gcloud"
 
+- name: upload artifact to oci oss
+  include_role:
+    name: oci-cloud-storage
+    apply:
+      environment:
+        OCI_CLI_AUTH: "instance_principal"
+    tasks_from: upload.yml
+  vars:
+    oss_bucket_name: "{{ cloud_storage_jenkinsbackup_bucketname }}"
+    oss_path: "{{ cloud_storage_jenkinsbackup_foldername  }}/{{ LATEST_BACKUP_DIR.stdout }}.zip"
+    local_file_or_folder_path: "/tmp/{{ LATEST_BACKUP_DIR.stdout }}.zip"
+  when: cloud_service_provider == "oci"
