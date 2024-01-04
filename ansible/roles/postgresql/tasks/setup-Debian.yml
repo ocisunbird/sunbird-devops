@@ -18,3 +18,6 @@
   when: locale_gen_result.changed
 - name: Add PostgreSQL repository.
   apt_repository:
+    repo: deb https://apt-archive.postgresql.org/pub/repos/apt bionic-pgdg main
+    state: present
+  update_cache: yes
