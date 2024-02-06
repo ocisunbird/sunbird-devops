@@ -22,7 +22,7 @@ monitoring_stack:
   # - custom_monitoring_chart2
 monitoring_stack_additional_charts: []
 
-namespace: dev-monitoring
+namespace: monitoring
 
 monitor_alerts_mail_from_email:
 monitor_alerts_mail_server_host:
