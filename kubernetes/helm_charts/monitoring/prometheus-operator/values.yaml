@@ -1012,7 +1012,7 @@ kube-state-metrics:
   rbac:
     create: true
   podSecurityPolicy:
-    enabled: true
+    enabled: false
 
 ## Deploy node exporter as a daemonset to all nodes
 ##
