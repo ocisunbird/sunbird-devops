@@ -14,7 +14,7 @@
     mode: 0755
 
 - set_fact:
-    cassandra_backup_folder_name: "cassandra-backup-{{ lookup('pipe', 'date +%Y%m%d') }}-{{ ansible_hostname }}-new"
+    cassandra_backup_folder_name: "cassandra-backup-20240229-cassandra-lms-cluster-1-new"
 
 - name: run the backup script
   become: true
