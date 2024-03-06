@@ -27,8 +27,8 @@
 #     - name: Check Elasticsearch Port
 #       command: "nc -z -v -w 2 {{ inventory_hostname }} 9200"
 #       ignore_errors: yes
-#       register: nc_result      
--
+#       register: nc_result 
+
 - hosts: lp-redis-ps
   tasks:
     - name: Check redis service status
