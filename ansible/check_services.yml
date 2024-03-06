@@ -85,14 +85,13 @@
 - hosts: lp-learning-ps
   tasks:
     - name: Check Logstash service status
-      command: systemctl status logstash
+      service:
+        name: logstash
+        state: started
       register: logstash_status
-      ignore_errors: yes  # Ignore errors in case logstash service is not installed or enabled
-
     - name: Print Logstash service status
       debug:
-        msg: "Logstash Service Status: {{ logstash_status.stdout }}"
-      when: logstash_status.rc == 0  # Print status only if the command was successful
+        msg: "Logstash Service Status: {{ logstash_status.state }}"
 
 #- hosts: lp-neo4j-ps
 #  tasks:
