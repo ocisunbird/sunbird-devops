@@ -69,13 +69,16 @@
 - hosts: lp-neo4j-ps
   tasks:
     - name: Check Neo4j Service Status
-      command: /home/learning/neo4j-learning/neo4j-community-3.3.9/bin/neo4j status
+      systemd:
+        name: neo4j
+        state: started
+        enabled: yes
       register: service_status
-      changed_when: false
-      become: true
-    - name: Print Neo4j service status
+
+    - name: Print Neo4j Service Status
       debug:
-        msg: 'Neo4j Service Status: {{ service_status.stdout }}'
+        msg: "Neo4j Service Status: {{ service_status.state }}"
+
 
 - hosts: lp-redis-ps
   tasks:
