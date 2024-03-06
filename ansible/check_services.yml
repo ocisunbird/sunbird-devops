@@ -59,12 +59,12 @@
       debug:
         msg: 'Kafka Service Status: {{ kafka_status.state }}'
 
-- hosts: lp-learning-ps
-  tasks:
-    - name: Check Tomcat Port (learning VM)
-      command: 'nc -z -v -w 2 {{ inventory_hostname }} 8080'
-      ignore_errors: 'yes'
-      register: nc_tomcat_result
+#- hosts: lp-learning-ps
+#  tasks:
+#    - name: Check Tomcat Port (learning VM)
+#      command: 'nc -z -v -w 2 {{ inventory_hostname }} 8080'
+#      ignore_errors: 'yes'
+#      register: nc_tomcat_result
 
 - hosts: lp-neo4j-ps
   tasks:
