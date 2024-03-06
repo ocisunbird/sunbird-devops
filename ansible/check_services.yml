@@ -83,9 +83,10 @@
         msg: "Elasticsearch Service Status: {{ elasticsearch_status.state }}"
 
 - hosts: lp-neo4j-ps
+  become: yes
   tasks:
     - name: Check Neo4j Service Status
-      command: sudo /home/learning/neo4j-learning/neo4j-enterprise-3.3.10-SNAPSHOT/bin/neo4j status
+      command: /home/learning/neo4j-learning/neo4j-enterprise-3.3.10-SNAPSHOT/bin/neo4j status
       register: neo4j_status
       ignore_errors: yes  # Ignore errors in case Neo4j service is not installed or enabled
 
