@@ -7,7 +7,7 @@
       register: postgresql_status
     - name: Print PostgreSQL service status
       debug:
-        msg: 'PostgreSQL Service Status: {{ postgresql_status.state }}'
+        msg: "PostgreSQL Service Status: {{ postgresql_status.state }}"
 
 - hosts: lp-cassandra
   tasks:
@@ -18,14 +18,15 @@
       register: cassandra_status
     - name: Print Cassandra service status
       debug:
-        msg: 'Cassandra Service Status: {{ cassandra_status.state }}'
+        msg: "Cassandra Service Status: {{ cassandra_status.state }}"
 
 - hosts: lp-composite-ps
   tasks:
     - name: Check Elasticsearch Port
-      command: 'nc -z -v -w 2 {{ inventory_hostname }} 9200'
-      ignore_errors: 'yes'
+      command: nc -z -v -w 2 {{ inventory_hostname }} 9200
+      ignore_errors: yes
       register: nc_result
+
 - hosts: processing-cluster-kafka-1
   tasks:
     - name: Check kafka service status
@@ -35,7 +36,7 @@
       register: kafka_status
     - name: Print Kafka service status
       debug:
-        msg: 'Kafka Service Status: {{ kafka_status.state }}'
+        msg: "Kafka Service Status: {{ kafka_status.state }}"
 
 - hosts: processing-cluster-kafka-2
   tasks:
@@ -46,7 +47,7 @@
       register: kafka_status
     - name: Print Kafka service status
       debug:
-        msg: 'Kafka Service Status: {{ kafka_status.state }}'
+        msg: "Kafka Service Status: {{ kafka_status.state }}"
 
 - hosts: processing-cluster-kafka-3
   tasks:
@@ -57,7 +58,29 @@
       register: kafka_status
     - name: Print Kafka service status
       debug:
-        msg: 'Kafka Service Status: {{ kafka_status.state }}'
+        msg: "Kafka Service Status: {{ kafka_status.state }}"
+
+- hosts: lp-redis-ps
+  tasks:
+    - name: Check redis service status
+      service:
+        name: redis
+        state: started
+      register: redis_status
+    - name: Print Redis service status
+      debug:
+        msg: "Redis Service Status: {{ redis_status.state }}"
+
+- hosts: log-es-2
+  tasks:
+    - name: Check Elasticsearch service status
+      service:
+        name: elasticsearch
+        state: started
+      register: elasticsearch_status
+    - name: Print Elasticsearch service status
+      debug:
+        msg: "Elasticsearch Service Status: {{ elasticsearch_status.state }}"
 
 #- hosts: lp-learning-ps
 #  tasks:
@@ -78,26 +101,3 @@
 #    - name: Print Neo4j Service Status
 #      debug:
 #        msg: "Neo4j Service Status: {{ service_status.state }}"
-
-
-- hosts: lp-redis-ps
-  tasks:
-    - name: Check redis service status
-      service:
-        name: redis
-        state: started
-      register: redis_status
-    - name: Print Redis service status
-      debug:
-        msg: 'Redis Service Status: {{ redis_status.state }}'
-
-- hosts: log-es-2
-  tasks:
-    - name: Check Elasticsearch service status
-      service:
-        name: elasticsearch
-        state: started
-      register: elasticsearch_status
-    - name: Print Elasticsearch service status
-      debug:
-        msg: 'Elasticsearch Service Status: {{ elasticsearch_status.state }}'
