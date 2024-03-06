@@ -66,18 +66,18 @@
 #      ignore_errors: 'yes'
 #      register: nc_tomcat_result
 
-- hosts: lp-neo4j-ps
-  tasks:
-    - name: Check Neo4j Service Status
-      systemd:
-        name: neo4j
-        state: started
-        enabled: yes
-      register: service_status
+#- hosts: lp-neo4j-ps
+#  tasks:
+#    - name: Check Neo4j Service Status
+#      systemd:
+#        name: neo4j
+#        state: started
+#        enabled: yes
+#      register: service_status
 
-    - name: Print Neo4j Service Status
-      debug:
-        msg: "Neo4j Service Status: {{ service_status.state }}"
+#    - name: Print Neo4j Service Status
+#      debug:
+#        msg: "Neo4j Service Status: {{ service_status.state }}"
 
 
 - hosts: lp-redis-ps
