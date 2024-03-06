@@ -94,13 +94,14 @@
         msg: "Neo4j Service Status: {{ neo4j_status.stdout }}"
       when: neo4j_status.rc == 0  # Print status only if the command was successful
 
-#- hosts: lp-learning-ps
-#  tasks:
-#    - name: Check Logstash service status
-#      service:
-#        name: logstash
-#        state: started
-#      register: logstash_status
-#    - name: Print Logstash service status
-#      debug:
-#        msg: "Logstash Service Status: {{ logstash_status.state }}"
+- hosts: lp-learning-ps
+  tasks:
+    - name: Check Logstash service status
+      command: systemctl status logstash
+      register: logstash_status
+      ignore_errors: yes  # Ignore errors in case Learning-ps service is not installed or enabled
+
+    - name: Print Logstash Service Status
+      debug:
+        msg: "Logstash Service Status: {{ logstash_status_status.stdout }}"
+      when: logstash_status.rc == 0  # Print status only if the command was successful
