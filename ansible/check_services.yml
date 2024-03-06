@@ -82,26 +82,25 @@
       debug:
         msg: "Elasticsearch Service Status: {{ elasticsearch_status.state }}"
 
-- hosts: lp-learning-ps
+- hosts: lp-neo4j-ps
   tasks:
-    - name: Check Logstash service status
-      service:
-        name: logstash
-        state: started
-      register: logstash_status
-    - name: Print Logstash service status
+    - name: Check Neo4j Service Status
+      command: sudo /home/learning/neo4j-learning/neo4j-enterprise-3.3.10-SNAPSHOT/bin/neo4j status
+      register: neo4j_status
+      ignore_errors: yes  # Ignore errors in case Neo4j service is not installed or enabled
+
+    - name: Print Neo4j Service Status
       debug:
-        msg: "Logstash Service Status: {{ logstash_status.state }}"
+        msg: "Neo4j Service Status: {{ neo4j_status.stdout }}"
+      when: neo4j_status.rc == 0  # Print status only if the command was successful
 
-#- hosts: lp-neo4j-ps
+#- hosts: lp-learning-ps
 #  tasks:
-#    - name: Check Neo4j Service Status
-#      systemd:
-#        name: neo4j
+#    - name: Check Logstash service status
+#      service:
+#        name: logstash
 #        state: started
-#        enabled: yes
-#      register: service_status
-
-#    - name: Print Neo4j Service Status
+#      register: logstash_status
+#    - name: Print Logstash service status
 #      debug:
-#        msg: "Neo4j Service Status: {{ service_status.state }}"
+#        msg: "Logstash Service Status: {{ logstash_status.state }}"
