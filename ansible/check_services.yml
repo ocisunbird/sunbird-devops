@@ -95,20 +95,14 @@
         msg: "Neo4j Service Status: {{ neo4j_status.stdout }}"
       when: neo4j_status.rc == 0  # Print status only if the command was successful
 
-- hosts: lp-learning-ps
-  gather_facts: yes
+#- hosts: lp-learning-ps
+#  tasks:
+#    - name: Check Logstash service status
+#      command: systemctl status logstash
+#      register: logstash_status
+#      ignore_errors: yes  # Ignore errors in case Logstash service is not installed or enabled
 
-  tasks:
-    - name: Gather facts about services
-      service_facts:
-
-    - name: Print Java service status
-      debug:
-        msg: "Java Service Status: running"
-      when: "'learning' in ansible_services | map(attribute='user') | list"
-      ignore_errors: yes
-
-    - name: Print Logstash service status
-      debug:
-        msg: "Logstash Service Status: {{ 'active' if 'logstash.service' in ansible_services.keys() else 'inactive' }}"
-      ignore_errors: yes
+#    - name: Print Logstash Service Status
+#      debug:
+#        msg: "Logstash Service Status: {{ logstash_status.stdout }}"
+#      when: logstash_status.rc == 0  # Print status only if the command was successful
