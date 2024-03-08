@@ -1,14 +1,15 @@
 - hosts: postgresql-master
+  become: yes
   tasks:
-    - name: Check PostgreSQL service status
+    - name: Check Postgresql Service Status
       command: systemctl is-active postgresql
       register: postgresql_status
-      ignore_errors: yes
+      ignore_errors: yes  # Ignore errors in case Postgresql service is not installed or enabled
 
-    - name: Print PostgreSQL Service Status
+    - name: Print Postgresql Service Status
       debug:
-        msg: "PostgreSQL Service Status: {{ postgresql_status.stdout }}"
-      when: postgresql_status.rc == 0
+        msg: "Postgresql Service Status: {{ postgresql_status.stdout }}"
+      when: postgresql_status.rc == 0  # Print status only if the command was successful
 
 
 - hosts: lp-cassandra
