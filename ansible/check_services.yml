@@ -1,13 +1,14 @@
 - hosts: postgresql-master
   tasks:
-    - name: Check systemctl status postgresql
-      service:
+    - name: Check PostgreSQL service status
+      systemd:
         name: postgresql
-        state: started
+        state: status
       register: postgresql_status
-    - name: Print PostgreSQL service status
+
+    - name: Print PostgreSQL Service Status
       debug:
-        msg: "PostgreSQL Service Status: {{ postgresql_status.state }}"
+        msg: "PostgreSQL Service Status: {{ postgresql_status.status }}"
 
 - hosts: lp-cassandra
   tasks:
