@@ -1,14 +1,15 @@
 - hosts: postgresql-master
   tasks:
     - name: Check PostgreSQL service status
-      systemd:
-        name: postgresql
-        state: status
+      command: systemctl is-active postgresql
       register: postgresql_status
+      ignore_errors: yes
 
     - name: Print PostgreSQL Service Status
       debug:
-        msg: "PostgreSQL Service Status: {{ postgresql_status.status }}"
+        msg: "PostgreSQL Service Status: {{ postgresql_status.stdout }}"
+      when: postgresql_status.rc == 0
+
 
 - hosts: lp-cassandra
   tasks:
@@ -17,7 +18,8 @@
         name: cassandra
         state: started
       register: cassandra_status
-    - name: Print Cassandra service status
+
+    - name: Print Cassandra Service Status
       debug:
         msg: "Cassandra Service Status: {{ cassandra_status.state }}"
 
@@ -30,45 +32,49 @@
 
 - hosts: processing-cluster-kafka-1
   tasks:
-    - name: Check kafka service status
+    - name: Check Kafka service status
       service:
         name: kafka
         state: started
       register: kafka_status
-    - name: Print Kafka service status
+
+    - name: Print Kafka Service Status
       debug:
         msg: "Kafka Service Status: {{ kafka_status.state }}"
 
 - hosts: processing-cluster-kafka-2
   tasks:
-    - name: Check kafka service status
+    - name: Check Kafka service status
       service:
         name: kafka
         state: started
       register: kafka_status
-    - name: Print Kafka service status
+
+    - name: Print Kafka Service Status
       debug:
         msg: "Kafka Service Status: {{ kafka_status.state }}"
 
 - hosts: processing-cluster-kafka-3
   tasks:
-    - name: Check kafka service status
+    - name: Check Kafka service status
       service:
         name: kafka
         state: started
       register: kafka_status
-    - name: Print Kafka service status
+
+    - name: Print Kafka Service Status
       debug:
         msg: "Kafka Service Status: {{ kafka_status.state }}"
 
 - hosts: lp-redis-ps
   tasks:
-    - name: Check redis service status
+    - name: Check Redis service status
       service:
         name: redis
         state: started
       register: redis_status
-    - name: Print Redis service status
+
+    - name: Print Redis Service Status
       debug:
         msg: "Redis Service Status: {{ redis_status.state }}"
 
