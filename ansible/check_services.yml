@@ -98,7 +98,7 @@
 - hosts: lp-learning-ps
   tasks:
     - name: Check Java service status
-      command: ps -ef | grep java
+      shell: ps -ef | grep java
       register: java_status
       ignore_errors: yes  # Ignore errors in case Java service is not running or installed
 
