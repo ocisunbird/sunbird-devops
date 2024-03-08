@@ -34,63 +34,68 @@
       register: nc_result
 
 - hosts: processing-cluster-kafka-1
+  become: yes
   tasks:
-    - name: Check Kafka service status
-      service:
-        name: kafka
-        state: started
+    - name: Check Kafka Service Status
+      command: systemctl status kafka
       register: kafka_status
+      ignore_errors: yes  # Ignore errors in case Kafka service is not installed or enabled
 
     - name: Print Kafka Service Status
       debug:
-        msg: "Kafka Service Status: {{ kafka_status.state }}"
+        msg: "Kafka Service Status: {{ kafka_status.stdout }}"
+      when: kafka_status.rc == 0  # Print status only if the command was successful
 
 - hosts: processing-cluster-kafka-2
+  become: yes
   tasks:
-    - name: Check Kafka service status
-      service:
-        name: kafka
-        state: started
+    - name: Check Kafka Service Status
+      command: systemctl status kafka
       register: kafka_status
+      ignore_errors: yes  # Ignore errors in case Kafka service is not installed or enabled
 
     - name: Print Kafka Service Status
       debug:
-        msg: "Kafka Service Status: {{ kafka_status.state }}"
+        msg: "Kafka Service Status: {{ kafka_status.stdout }}"
+      when: kafka_status.rc == 0  # Print status only if the command was successful
 
 - hosts: processing-cluster-kafka-3
+  become: yes
   tasks:
-    - name: Check Kafka service status
-      service:
-        name: kafka
-        state: started
+    - name: Check Kafka Service Status
+      command: systemctl status kafka
       register: kafka_status
+      ignore_errors: yes  # Ignore errors in case Kafka service is not installed or enabled
 
     - name: Print Kafka Service Status
       debug:
-        msg: "Kafka Service Status: {{ kafka_status.state }}"
+        msg: "Kafka Service Status: {{ kafka_status.stdout }}"
+      when: kafka_status.rc == 0  # Print status only if the command was successful
 
 - hosts: lp-redis-ps
   tasks:
     - name: Check Redis service status
-      service:
-        name: redis
-        state: started
+      command: systemctl status redis
       register: redis_status
+      ignore_errors: yes  # Ignore errors in case Redis service is not installed or enabled
 
     - name: Print Redis Service Status
       debug:
-        msg: "Redis Service Status: {{ redis_status.state }}"
+        msg: "Redis Service Status: {{ redis_status.stdout }}"
+      when: redis_status.rc == 0  # Print status only if the command was successful
 
 - hosts: log-es-2
   tasks:
     - name: Check Elasticsearch service status
-      service:
-        name: elasticsearch
-        state: started
+      command: systemctl status elasticsearch
       register: elasticsearch_status
-    - name: Print Elasticsearch service status
+      ignore_errors: yes  # Ignore errors in case Elasticsearch service is not installed or enabled
+
+    - name: Print Elasticsearch Service Status
       debug:
-        msg: "Elasticsearch Service Status: {{ elasticsearch_status.state }}"
+        msg: "Elasticsearch Service Status: {{ elasticsearch_status.stdout }}"
+      when: elasticsearch_status.rc == 0  # Print status only if the command was successful
+
 
 - hosts: lp-neo4j-ps
   become: yes
