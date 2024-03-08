@@ -12,16 +12,18 @@
 
 
 - hosts: lp-cassandra
+  become: yes
   tasks:
-    - name: Check Cassandra service status
-      service:
-        name: cassandra
-        state: started
+    - name: Check Cassandra Service Status
+      command: systemctl status cassandra
       register: cassandra_status
+      ignore_errors: yes  # Ignore errors in case Cassandra service is not installed or enabled
 
     - name: Print Cassandra Service Status
       debug:
-        msg: "Cassandra Service Status: {{ cassandra_status.state }}"
+        msg: "Cassandra Service Status: {{ cassandra_status.stdout }}"
+      when: cassandra_status.rc == 0  # Print status only if the command was successful
+
 
 - hosts: lp-composite-ps
   tasks:
