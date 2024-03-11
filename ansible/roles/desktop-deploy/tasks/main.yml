@@ -145,7 +145,7 @@
           OCI_CLI_AUTH: "instance_principal"  
         tasks_from: upload-folder.yml
       vars:
-        oss_path: "{{ offline_installer_storage }}"
+        oss_path: ""
         local_file_or_folder_path: "{{ offline_repo_location }}/desktop_uploader_assets"
     
     - name: upload batch of files to OCI
@@ -156,6 +156,6 @@
           OCI_CLI_AUTH: "instance_principal"  
         tasks_from: upload-folder.yml
       vars:
-        oss_path: "latest"
+        oss_path: "latest/"
         local_file_or_folder_path: "{{ offline_repo_location }}/desktop_uploader_assets/{{ time }}/"
   when: cloud_service_provider == "oci"
