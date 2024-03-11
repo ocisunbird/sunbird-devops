@@ -128,3 +128,34 @@
         gcp_path: "latest"
         local_file_or_folder_path: "{{ offline_repo_location }}/desktop_uploader_assets/{{ time }}/"
   when: cloud_service_provider == "gcloud"
+
+  ######################## OCI tasks ##################################
+
+- name: this block consists of tasks related to OCI
+  block:
+    - name: set common OCI variables
+      set_fact:
+        oss_bucket_name: "{{ cloud_storage_offlineinstaller_bucketname }}"
+
+    - name: upload batch of files to OCI
+      include_role:
+        name: oci-cloud-storage
+        apply:
+         environment:
+          OCI_CLI_AUTH: "instance_principal"  
+        tasks_from: upload-folder.yml
+      vars:
+        oss_path: "{{ offline_installer_storage }}"
+        local_file_or_folder_path: "{{ offline_repo_location }}/desktop_uploader_assets"
+    
+    - name: upload batch of files to OCI
+      include_role:
+        name: oci-cloud-storage
+        apply:
+         environment:
+          OCI_CLI_AUTH: "instance_principal"  
+        tasks_from: upload-folder.yml
+      vars:
+        oss_path: "latest"
+        local_file_or_folder_path: "{{ offline_repo_location }}/desktop_uploader_assets/{{ time }}/"
+  when: cloud_service_provider == "oci"
