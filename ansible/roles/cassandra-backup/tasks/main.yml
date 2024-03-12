@@ -59,9 +59,12 @@
   when: cloud_service_provider == "aws"
 
 - name: upload backup to OCI
-  include_role:
-    name: oci-cloud-storage
-    tasks_from: upload.yml
+      include_role:
+        name: oci-cloud-storage
+        apply:
+         environment:
+          OCI_CLI_AUTH: "instance_principal"  
+        tasks_from: upload-folder.yml
   vars:
     local_file_or_folder_path: "/data/cassandra/backup/{{ cassandra_backup_folder_name }}"
     oss_bucket_name: "{{ cloud_storage_cassandrabackup_bucketname }}"
