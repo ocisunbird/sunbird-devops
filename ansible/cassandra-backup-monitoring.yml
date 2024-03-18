@@ -1,0 +1,19 @@
+- name: Retrieve Cassandra backup log
+  hosts: cassandra
+  gather_facts: no
+  tasks:
+    - name: Get current date in YYYY-MM-DD format
+      command: date +'%Y-%m-%d'
+      register: current_date_yyyy_mm_dd
+    - name: Get current date in YYYY/MM/DD format
+      command: date +'%Y/%m/%d'
+      register: current_date_yyyy_mm_dd
+    - name: Check for 100% success in Cassandra backup log for the current date (YYYY-MM-DD format)
+      shell:
+        cmd: grep "{{ current_date_yyyy_mm_dd.stdout }}" /var/log/cassandra/backup.log | grep -E '100%'
+      register: cassandra_backup_status_yyyy_mm_dd
+ 
+    - name: Check for 100% success in Cassandra backup log for the current date (YYYY/MM/DD format)
+      shell:
+        cmd: grep "{{ current_date_yyyy_mm_dd.stdout }}" /var/log/cassandra/backup.log | grep -E '100%'
+      register: cassandra_backup_status_yyyy_mm_dd
