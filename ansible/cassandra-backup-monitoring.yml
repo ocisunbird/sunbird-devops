@@ -17,3 +17,4 @@
       shell:
         cmd: grep "{{ current_date_yyyy_mm_dd.stdout }}" /var/log/cassandra/backup.log | grep -E '100%'
       register: cassandra_backup_status_yyyy_mm_dd
+      
