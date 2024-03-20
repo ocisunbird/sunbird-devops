@@ -3,7 +3,7 @@
   gather_facts: no
   tasks:
     - name: Loop through Kafka consumer groups and check lag status
-      command: /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server "10.90.8.114:9092" --describe --group "{{ item }}"
+      command: /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server "localhost:9092" --describe --group "{{ item }}"
       register: consumer_group_output
       loop:
         - "ntpprod-activity-aggregate-group"
