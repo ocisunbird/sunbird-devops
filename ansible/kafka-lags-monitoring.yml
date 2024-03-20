@@ -1,0 +1,41 @@
+- name: Display Kafka consumer group status
+  hosts: ingestion-cluster-kafka
+  gather_facts: no
+  tasks:
+    - name: Loop through Kafka consumer groups and check lag status
+      command: /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server "10.90.8.114:9092" --describe --group "{{ item }}"
+      register: consumer_group_output
+      loop:
+        - "ntpprod-activity-aggregate-group"
+        - "ntpprod-assessment-aggregator-group"
+        - "ntpprod-audit-event-generator-group"
+        - "ntpprod-audit-history-indexer-group"
+        - "ntpprod-certificate-generator-group"
+        - "ntpprod-asset-enrichment-group"
+        - "ntpprod-enrolment-reconciliation-group"
+        - "ntpprod-ingest-router-group"
+        - "ntpprod-post-publish-processor-group"
+        - "ntpprod-search-indexer-group"
+      loop_control:
+        label: "{{ item }}"
+
+    - name: Print Kafka lag status for each group
+      debug:
+        msg: Print Kafka Lag Status
+          ----------------------------------------
+          Checking Kafka Consumer Group: {{ item.item }}
+
+          Consumer group '{{ item.item }}' has no active members.
+
+          GROUP                            TOPIC                           PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
+          {{ item.stdout_lines | join('\n') }}
+
+          {% set lag = item.stdout | regex_replace('^[\\s\\S]*LAG[^0-9]*([0-9]+)[\\s\\S]*$', '\\1') | int %}
+          {% if item.item == 'ntpprod-activity-aggregate-group' and lag <= 400 %}
+          Kafka lag is normal (0 to 400)
+          {% else %}
+          Kafka lag is high
+          {% endif %}
+      loop: "{{ consumer_group_output.results }}"
+      loop_control:
+        label: "{{ item.item }}"
