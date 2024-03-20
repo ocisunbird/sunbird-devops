@@ -11,6 +11,7 @@
         - "ntpprod-audit-event-generator-group"
         - "ntpprod-audit-history-indexer-group"
         - "ntpprod-certificate-generator-group"
+        - "ntpprod-collection-cert-pre-processor-group"
         - "ntpprod-asset-enrichment-group"
         - "ntpprod-enrolment-reconciliation-group"
         - "ntpprod-ingest-router-group"
@@ -37,7 +38,7 @@
           {% endif %}
           {% endif %}
 
-          {% if item.item in ['ntpprod-assessment-aggregator-group', 'ntpprod-audit-event-generator-group', 'ntpprod-audit-history-indexer-group', 'ntpprod-certificate-generator-group', 'ntpprod-asset-enrichment-group', 'ntpprod-enrolment-reconciliation-group', 'ntpprod-ingest-router-group', 'ntpprod-post-publish-processor-group', 'ntpprod-search-indexer-group'] %}
+          {% if item.item in ['ntpprod-assessment-aggregator-group', 'ntpprod-audit-event-generator-group', 'ntpprod-audit-history-indexer-group', 'ntpprod-certificate-generator-group', 'ntpprod-collection-cert-pre-processor-group', 'ntpprod-asset-enrichment-group', 'ntpprod-enrolment-reconciliation-group', 'ntpprod-ingest-router-group', 'ntpprod-post-publish-processor-group', 'ntpprod-search-indexer-group'] %}
           {% if lag <= 9 %}
           Kafka lag for group '{{ item.item }}' is normal (0 to 9)
           {% else %}
