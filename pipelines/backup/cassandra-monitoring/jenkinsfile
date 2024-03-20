@@ -51,3 +51,28 @@ node() {
     }
 }
 
+def email_notify() {
+
+    def buildNumber = env.BUILD_NUMBER
+
+    def jobUrl = env.JOB_URL
+ 
+    // Send email notification using the built-in 'mail' step
+
+    mail (
+
+        subject: 'Jenkins Pipeline Status',
+
+        body: """$JOB_NAME - Pipeline ${currentBuild.result}.
+
+        Build Number: $buildNumber
+
+        Job URL: $jobUrl
+
+        Hello, This is an email from Prod Jenkins pipeline.""",
+
+        to: 'alertsdiksha@trigyn.com'
+
+    )
+
+}
