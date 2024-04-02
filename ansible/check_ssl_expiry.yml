@@ -10,7 +10,6 @@
           - 200
           - 201  # Add other status codes you want to treat as successful
         register: certificate_info
-      ignore_errors: yes  # Ignore all errors, including non-200 status codes
       with_items:
         - ops.diksha.gov.in
         - api.diksha.gov.in
@@ -31,7 +30,7 @@
         - sskvsk.karnataka.gov.in
         - vsk.schooleducationharyana.gov.in
         - pp-myjp.diksha.gov.in
-        - ejaaduipitara.ncert.gov.in.
+        - ejaaduipitara.ncert.gov.in
 
     - name: Extract SSL certificate expiry date and days left
       set_fact:
@@ -40,10 +39,14 @@
         status_code: "{{ item.status }}"
         success: "{{ item.status == 200 }}"
       with_items: "{{ certificate_info.results | default([]) }}"
-      when: certificate_info is defined and certificate_info.results | length > 0
+      when: certificate_info is defined and certificate_info.results | length > 0 and (item.status == 200 or item.status == 201)
 
     - name: Display SSL certificate expiry dates
       debug:
-        msg: "{{ item.item }} - Status Code: {{ item.status_code }} | Expiry Date: {{ item.expiry_date }} ({{ item.days_left }} days left)"
+        msg: "{{ item.item }} - Status Code: {{ item.status }} | Expiry Date: {{ item.expiry_date }} ({{ item.days_left }} days left)"
       with_items: "{{ certificate_info.results | default([]) }}"
-      when: item.success | default(true)
+      when: item.success | default(false)
+
+    # Print the output directly in Jenkins console
+    - debug:
+        var: certificate_info.results
