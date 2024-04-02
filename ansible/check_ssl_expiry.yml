@@ -6,8 +6,11 @@
       uri:
         url: "https://{{ item }}"
         return_content: yes
-      register: certificate_info
-      ignore_errors: yes
+        status_code:
+          - 200
+          - 201  # Add other status codes you want to treat as successful
+        register: certificate_info
+      ignore_errors: yes  # Ignore all errors, including non-200 status codes
       with_items:
         - ops.diksha.gov.in
         - api.diksha.gov.in
@@ -34,11 +37,14 @@
       set_fact:
         expiry_date: "{{ (item.content | regex_findall('(not valid after|expiry date|expire date|expires on|expire on)(.*)\n', '\\2') | first).split('(')[0] }}"
         days_left: "{{ ((expiry_date | to_datetime(format='%d %b %Y %H:%M:%S GMT')) - (ansible_date_time.iso8601 | to_datetime)).days }}"
+        status_code: "{{ item.status }}"
       with_items:
-        - "{{ certificate_info.results }}"
+        - "{{ certificate_info.results | default([]) }}"
+      when: certificate_info is defined and certificate_info.results | length > 0
 
     - name: Display SSL certificate expiry dates
       debug:
-        msg: "{{ item.item }} - Expiry Date: {{ item.expiry_date }} ({{ item.days_left }} days left)"
+        msg: "{{ item.item }} - Status Code: {{ item.status_code }} | Expiry Date: {{ item.expiry_date }} ({{ item.days_left }} days left)"
       with_items:
-        - "{{ certificate_info.results }}"
+        - "{{ certificate_info.results | default([]) }}"
+      when: certificate_info is defined and certificate_info.results | length > 0
