@@ -1,0 +1,43 @@
+---
+- name: Check SSL certificate expiry dates
+  hosts: localhost
+  tasks:
+    - name: Fetch SSL certificate information
+      uri:
+        url: "https://{{ item }}"
+        return_content: yes
+      register: certificate_info
+      with_items:
+        - ops.diksha.gov.in
+        - api.diksha.gov.in
+        - diksha.gov.in
+        - vdn.diksha.gov.in
+        - merge.diksha.gov.in
+        - obj.diksha.gov.in
+        - obj.vdn.diksha.gov.in
+        - static.diksha.gov.in
+        - oci.diksha.gov.in
+        - myaccess.diksha.orcl.cloud/login
+        - files.odev.oci.diksha.gov.in
+        - vdn.oci.diksha.gov.in
+        - dev.oci.diksha.gov.in
+        - support.diksha.gov.in
+        - teachersupport.diksha.gov.in
+        - vsk.ndear.gov.in
+        - sskvsk.karnataka.gov.in
+        - vsk.schooleducationharyana.gov.in
+        - pp-myjp.diksha.gov.in
+        - ejaaduipitara.ncert.gov.in
+
+    - name: Extract SSL certificate expiry date
+      set_fact:
+        expiry_date: "{{ (item.content | regex_findall('(not valid after|expiry date|expire date|expires on|expire on)(.*)\n', '\\2') | first).split('(')[0] }}"
+        days_left: "{{ ((expiry_date | to_datetime(format='%d %b %Y %H:%M:%S GMT')) - (ansible_date_time.iso8601 | to_datetime)).days }}"
+      with_items:
+        - "{{ certificate_info.results }}"
+
+    - name: Display SSL certificate expiry dates
+      debug:
+        msg: "{{ item.item }} - Expiry Date: {{ item.expiry_date }} ({{ item.days_left }} days left)"
+      with_items:
+        - "{{ certificate_info.results }}"
