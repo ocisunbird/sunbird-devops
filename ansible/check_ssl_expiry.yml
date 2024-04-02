@@ -33,15 +33,17 @@
         - pp-myjp.diksha.gov.in
         - ejaaduipitara.ncert.gov.in
 
-    - name: Extract SSL certificate expiry date
+    - name: Extract SSL certificate expiry date and days left
       set_fact:
         expiry_date: "{{ (item.content | regex_findall('(not valid after|expiry date|expire date|expires on|expire on)(.*)\n', '\\2') | first).split('(')[0] }}"
-        days_left: "{{ ((expiry_date | to_datetime(format='%d %b %Y %H:%M:%S GMT')) - (ansible_date_time.iso8601 | to_datetime)).days }}"
-      with_items:
-        - "{{ certificate_info.results | default([]) }}"
+        days_left: "{{ ((expiry_date | to_datetime(format='%b %d %H:%M:%S %Y %Z')) - (ansible_date_time.iso8601 | to_datetime)).days }}"
+        status_code: "{{ item.status }}"
+        success: "{{ item.status == 200 }}"
+      with_items: "{{ certificate_info.results | default([]) }}"
+      when: certificate_info is defined and certificate_info.results | length > 0
 
     - name: Display SSL certificate expiry dates
       debug:
-        msg: "{{ item.item.url }} - Status Code: {{ item.status }} | Expiry Date: {{ item.expiry_date }} ({{ item.days_left }} days left)"
-      with_items:
-        - "{{ certificate_info.results | default([]) }}"
+        msg: "{{ item.item }} - Status Code: {{ item.status_code }} | Expiry Date: {{ item.expiry_date }} ({{ item.days_left }} days left)"
+      with_items: "{{ certificate_info.results | default([]) }}"
+      when: item.success | default(true)
