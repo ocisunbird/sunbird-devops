@@ -31,7 +31,7 @@
         - sskvsk.karnataka.gov.in
         - vsk.schooleducationharyana.gov.in
         - pp-myjp.diksha.gov.in
-        - ejaaduipitara.ncert.gov.in
+        - ejaaduipitara.ncert.gov.in.
 
     - name: Extract SSL certificate expiry date and days left
       set_fact:
