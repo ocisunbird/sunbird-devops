@@ -7,6 +7,7 @@
         url: "https://{{ item }}"
         return_content: yes
       register: certificate_info
+      ignore_errors: yes
       with_items:
         - ops.diksha.gov.in
         - api.diksha.gov.in
