@@ -10,7 +10,7 @@
       command: chmod +x /opt/scripts/check_kafka_group-status.py
 
     - name: Execute Python Script
-      command: python3 /opt/scripts/check_kafka_group-status.py
+      command: /usr/bin/python3 /opt/scripts/check_kafka_group-status.py
       register: script_output
 
     - name: Print Script Output
