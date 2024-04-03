@@ -1,13 +1,20 @@
 ---
-- name: Execute check_kafka_group-status.py and Print Output
+- name: Execute Kafka Consumer Groups Script
   hosts: ingestion-cluster-kafka
-  gather_facts: no
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
+  become: yes  # If sudo/root access is required to copy the script and install dependencies
 
   tasks:
-    - name: Set Execute Permissions on Python Script
-      command: chmod +x /opt/scripts/check_kafka_group-status.py
+    - name: Copy Python Script to Target Servers
+      copy:
+        src: /path/to/local/check_kafka_group-status.py  # Update the source path accordingly
+        dest: /opt/scripts/check_kafka_group-status.py
+        mode: 0755  # Set execute permissions on the copied script
+
+    - name: Install tabulate Python library
+      pip:
+        name: tabulate
+        state: present
+        executable: /usr/bin/python3  # Path to the Python 3 interpreter on your target servers
 
     - name: Execute Python Script
       command: /usr/bin/python3 /opt/scripts/check_kafka_group-status.py
