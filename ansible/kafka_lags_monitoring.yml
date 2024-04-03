@@ -6,16 +6,17 @@
   tasks:
     - name: Copy Python Script to Target Servers
       copy:
-        src: /opt/scripts/check_kafka_group-status.py  # Update the source path accordingly
+        src: /path/to/local/check_kafka_group-status.py  # Update the source path accordingly
         dest: /opt/scripts/check_kafka_group-status.py
         mode: 0755  # Set execute permissions on the copied script
         remote_src: yes  # Check for the file on remote servers
 
-    - name: Install tabulate Python library
-      pip:
-        name: tabulate
-        state: present
-        executable: /usr/bin/python3  # Path to the Python 3 interpreter on your target servers
+    # Skip the installation task since tabulate is already installed manually
+    # - name: Install tabulate Python library
+    #   pip:
+    #     name: tabulate
+    #     state: present
+    #     executable: /usr/bin/python3  # Path to the Python 3 interpreter on your target servers
 
     - name: Execute Python Script
       command: /usr/bin/python3 /opt/scripts/check_kafka_group-status.py
