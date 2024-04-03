@@ -7,10 +7,10 @@
 
   tasks:
     - name: Set Execute Permissions on Python Script
-      command: chmod +x /root/certcheck.py
+      command: chmod +x /opt/scripts/certcheck.py
 
     - name: Execute Python Script
-      command: python3 /root/certcheck.py
+      command: python3 /opt/scripts/certcheck.py
       register: script_output
 
     - name: Print Script Output
