@@ -1,9 +1,14 @@
 ---
 - name: Execute certcheck.py and Print Output
-  hosts: jenkins-master
+  hosts: localhost
   gather_facts: no
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
 
   tasks:
+    - name: Set Execute Permissions on Python Script
+      command: chmod +x /root/certcheck.py
+
     - name: Execute Python Script
       command: python3 /root/certcheck.py
       register: script_output
