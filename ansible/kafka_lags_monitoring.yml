@@ -1,6 +1,6 @@
 ---
 - name: Execute check_kafka_group-status.py and Print Output
-  hosts: localhost
+  hosts: ingestion-cluster-kafka
   gather_facts: no
   vars:
     ansible_python_interpreter: /usr/bin/python3
