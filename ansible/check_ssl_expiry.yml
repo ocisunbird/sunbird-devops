@@ -1,45 +1,13 @@
 ---
-- name: Check SSL Certificate Expiry
+- name: Execute certcheck.py and Print Output
   hosts: jenkins-master
   gather_facts: no
 
   tasks:
-    - name: Get SSL Certificate Expiry for Domains
-      uri:
-        url: "https://{{ item }}"
-        method: GET
-        return_content: yes
-        validate_certs: no
-      register: response
-      loop:
-        - ops.diksha.gov.in
-        - api.diksha.gov.in
-        - diksha.gov.in
-        - vdn.diksha.gov.in
-        - merge.diksha.gov.in
-        - obj.diksha.gov.in
-        - obj.vdn.diksha.gov.in
-        - static.diksha.gov.in
-        - oci.diksha.gov.in
-        - myaccess.diksha.orcl.cloud
-        - files.odev.oci.diksha.gov.in
-        - vdn.oci.diksha.gov.in
-        - dev.oci.diksha.gov.in
-        - support.diksha.gov.in
-        - teachersupport.diksha.gov.in
-        - vsk.ndear.gov.in
-        - sskvsk.karnataka.gov.in
-        - vsk.schooleducationharyana.gov.in
-        - pp-myjp.diksha.gov.in
-        - ejaaduipitara.ncert.gov.in
+    - name: Execute Python Script
+      command: python3 /root/certcheck.py
+      register: script_output
 
-    - name: Extract Certificate Expiry Dates
-      set_fact:
-        expiry_dates: "{{ expiry_dates | default({}) | combine({item.item: item.json.server_cert.expiry_date}) }}"
-      loop: "{{ response.results }}"
-      when: response.status == 200 and item.json.server_cert is defined
-
-    - name: Print SSL Certificate Expiry Dates
+    - name: Print Script Output
       debug:
-        msg: "Domain {{ item.key }} has Expiry Date: {{ item.value }}"
-      loop: "{{ expiry_dates | dict2items }}"
+        msg: "{{ script_output.stdout }}"
