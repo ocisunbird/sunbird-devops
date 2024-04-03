@@ -1,16 +1,17 @@
 ---
-- name: Check SSL certificate expiry dates
-  hosts: localhost
+- name: Check SSL Certificate Expiry
+  hosts: jenkins-master
+  gather_facts: no
+
   tasks:
-    - name: Fetch SSL certificate information
+    - name: Get SSL Certificate Expiry for Domains
       uri:
         url: "https://{{ item }}"
+        method: GET
         return_content: yes
-        status_code:
-          - 200
-          - 201  # Add other status codes you want to treat as successful
-        register: certificate_info
-      with_items:
+        validate_certs: no
+      register: response
+      loop:
         - ops.diksha.gov.in
         - api.diksha.gov.in
         - diksha.gov.in
@@ -20,7 +21,7 @@
         - obj.vdn.diksha.gov.in
         - static.diksha.gov.in
         - oci.diksha.gov.in
-        - myaccess.diksha.orcl.cloud/login
+        - myaccess.diksha.orcl.cloud
         - files.odev.oci.diksha.gov.in
         - vdn.oci.diksha.gov.in
         - dev.oci.diksha.gov.in
@@ -32,21 +33,13 @@
         - pp-myjp.diksha.gov.in
         - ejaaduipitara.ncert.gov.in
 
-    - name: Extract SSL certificate expiry date and days left
+    - name: Extract Certificate Expiry Dates
       set_fact:
-        expiry_date: "{{ (item.content | regex_findall('(not valid after|expiry date|expire date|expires on|expire on)(.*)\n', '\\2') | first).split('(')[0] }}"
-        days_left: "{{ ((expiry_date | to_datetime(format='%b %d %H:%M:%S %Y %Z')) - (ansible_date_time.iso8601 | to_datetime)).days }}"
-        status_code: "{{ item.status }}"
-        success: "{{ item.status == 200 }}"
-      with_items: "{{ certificate_info.results | default([]) }}"
-      when: certificate_info is defined and certificate_info.results | length > 0 and (item.status == 200 or item.status == 201)
+        expiry_dates: "{{ expiry_dates | default({}) | combine({item.item: item.json.server_cert.expiry_date}) }}"
+      loop: "{{ response.results }}"
+      when: response.status == 200 and item.json.server_cert is defined
 
-    - name: Display SSL certificate expiry dates
+    - name: Print SSL Certificate Expiry Dates
       debug:
-        msg: "{{ item.item }} - Status Code: {{ item.status }} | Expiry Date: {{ item.expiry_date }} ({{ item.days_left }} days left)"
-      with_items: "{{ certificate_info.results | default([]) }}"
-      when: item.success | default(false)
-
-    # Print the output directly in Jenkins console
-    - debug:
-        var: certificate_info.results
+        msg: "Domain {{ item.key }} has Expiry Date: {{ item.value }}"
+      loop: "{{ expiry_dates | dict2items }}"
