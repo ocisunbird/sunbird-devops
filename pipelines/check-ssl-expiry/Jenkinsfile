@@ -50,25 +50,27 @@ node() {
 }
 
 def email_notify() {
-    def buildNumber = env.BUILD_NUMBER
-    def jobUrl = env.JOB_URL
+    // Import necessary Java time classes
+    import java.time.LocalDate
+    import java.time.format.DateTimeFormatter
 
-    // Get the console output from the entire build
-    def consoleLog = currentBuild.rawBuild.getLog(10000) // Adjust the number of lines as needed
+    // Get the current date in dd-MM-yyyy format
+    def currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
 
-    // Send email notification using the built-in 'mail' step
-    mail (
+    // Generate the attachment file name based on pipeline name and current date
+    def attachmentFileName = "${JOB_NAME}_${currentDate}.txt"
+
+    // Specify the path to the attachment file using the generated file name
+    def attachmentFilePath = "${WORKSPACE}/${attachmentFileName}"
+
+    emailext (
         subject: 'Jenkins Pipeline Status',
         body: """$JOB_NAME - Pipeline ${currentBuild.result}.
-
-        Build Number: $buildNumber
-
-        Job URL: $jobUrl
-
-        Console Output:
-        $consoleLog
-
+        Build Number: ${env.BUILD_NUMBER}
+        Job URL: ${env.JOB_URL}
         Hello, This is an email from Dev Jenkins pipeline.""",
-        to: 'alertsdiksha@trigyn.com'
+        to: 'alertsdiksha@trigyn.com',
+        attachments: attachmentFilePath
     )
 }
+
