@@ -49,6 +49,9 @@ node() {
     }
 }
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 def email_notify() {
     def buildNumber = env.BUILD_NUMBER
     def jobUrl = env.JOB_URL
@@ -61,8 +64,11 @@ def email_notify() {
     Hello, This is an email from Dev Jenkins pipeline.
     """
 
-    // Write the output to a temporary file
-    def tempFilePath = "${WORKSPACE}/${JOB_NAME}_output.txt"
+    // Get the current date in DD-MM-YYYY format
+    def currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+
+    // Write the output to a temporary file with date in the file name
+    def tempFilePath = "${WORKSPACE}/${JOB_NAME}_output_${currentDate}.txt"
     writeFile file: tempFilePath, text: pipelineOutput
 
     // Send email notification using the built-in 'mail' step with the attachment
@@ -73,9 +79,7 @@ def email_notify() {
         Job URL: $jobUrl
         Hello, This is an email from Dev Jenkins pipeline.""",
         to: 'alertsdiksha@trigyn.com',
-        attachmentsPattern: tempFilePath
+        attachments: [file(tempFilePath)]
     )
-
-    // Clean up the temporary file after sending the email
-    sh "rm ${tempFilePath}"
 }
+
