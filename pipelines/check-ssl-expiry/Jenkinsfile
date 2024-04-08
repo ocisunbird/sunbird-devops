@@ -48,3 +48,22 @@ node() {
         email_notify()
     }
 }
+
+def email_notify() {
+    def buildNumber = env.BUILD_NUMBER
+    def jobUrl = env.JOB_URL
+
+    emailext (
+        subject: 'Jenkins Pipeline Status',
+        body: """$JOB_NAME - Pipeline ${currentBuild.result}.
+
+        Build Number: $buildNumber
+
+        Job URL: $jobUrl
+
+        Console Output is attached.""",
+        to: 'alertsdiksha@trigyn.com',
+        attachmentsPattern: "${env.BUILD_ID}/log",
+        attachLog: true
+    )
+}
