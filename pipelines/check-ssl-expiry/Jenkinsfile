@@ -54,7 +54,7 @@ def email_notify() {
     def jobUrl = env.JOB_URL
 
     // Get the console output from the entire build
-    def consoleLog = currentBuild.getLog(10000) // Adjust the number of lines as needed
+    def consoleLog = currentBuild.rawBuild.getLog(10000) // Adjust the number of lines as needed
 
     // Send email notification using the built-in 'mail' step
     mail (
