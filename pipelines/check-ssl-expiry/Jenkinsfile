@@ -49,21 +49,21 @@ node() {
     }
 }
 
+import java.text.SimpleDateFormat
+import java.util.Date
+
 def email_notify() {
     def buildNumber = env.BUILD_NUMBER
     def jobUrl = env.JOB_URL
     
     // Get the current date in dd-MM-yyyy format
-    def currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+    def currentDate = new Date().format('dd-MM-yyyy')
 
     // Generate the attachment file name based on pipeline name and current date
     def attachmentFileName = "${JOB_NAME}_${currentDate}.txt"
 
     // Specify the path to the attachment file using the generated file name
     def attachmentFilePath = "${WORKSPACE}/${attachmentFileName}"
-
-    // Check if the attachment file exists
-    sh "ls ${attachmentFilePath}"
 
     emailext (
         subject: 'Jenkins Pipeline Status',
@@ -75,5 +75,6 @@ def email_notify() {
         attachments: attachmentFilePath
     )
 }
+
 
 
