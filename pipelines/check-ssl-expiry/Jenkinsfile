@@ -50,27 +50,25 @@ node() {
 }
 
 def email_notify() {
-
     def buildNumber = env.BUILD_NUMBER
-
     def jobUrl = env.JOB_URL
- 
+
+    // Get the console output from the entire build
+    def consoleLog = currentBuild.rawBuild.getLog(10000) // Adjust the number of lines as needed
+
     // Send email notification using the built-in 'mail' step
-
     mail (
-
         subject: 'Jenkins Pipeline Status',
-
         body: """$JOB_NAME - Pipeline ${currentBuild.result}.
 
         Build Number: $buildNumber
 
         Job URL: $jobUrl
 
+        Console Output:
+        $consoleLog
+
         Hello, This is an email from Dev Jenkins pipeline.""",
-
         to: 'alertsdiksha@trigyn.com'
-
     )
-
 }
