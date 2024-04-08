@@ -52,29 +52,36 @@ node() {
 import java.text.SimpleDateFormat
 import java.util.Date
 
+import java.nio.file.Files
+import java.nio.file.Paths
+
 def email_notify() {
     def buildNumber = env.BUILD_NUMBER
     def jobUrl = env.JOB_URL
-    
-    // Get the current date in dd-MM-yyyy format
-    def currentDate = new Date().format('dd-MM-yyyy')
 
-    // Generate the attachment file name based on pipeline name and current date
-    def attachmentFileName = "${JOB_NAME}_${currentDate}.txt"
+    // Capture the pipeline output as a string
+    def pipelineOutput = """
+    $JOB_NAME - Pipeline ${currentBuild.result}.
+    Build Number: $buildNumber
+    Job URL: $jobUrl
+    Hello, This is an email from Dev Jenkins pipeline.
+    """
 
-    // Specify the path to the attachment file using the generated file name
-    def attachmentFilePath = "${WORKSPACE}/${attachmentFileName}"
+    // Write the output to a temporary file
+    def tempFilePath = "${WORKSPACE}/${JOB_NAME}_output.txt"
+    Files.write(Paths.get(tempFilePath), pipelineOutput.getBytes())
 
-    emailext (
+    // Send email notification using the built-in 'mail' step with the attachment
+    mail (
         subject: 'Jenkins Pipeline Status',
         body: """$JOB_NAME - Pipeline ${currentBuild.result}.
         Build Number: $buildNumber
         Job URL: $jobUrl
         Hello, This is an email from Dev Jenkins pipeline.""",
         to: 'alertsdiksha@trigyn.com',
-        attach: "${attachmentFilePath}"
+        attachments: tempFilePath
     )
+
+    // Clean up the temporary file after sending the email
+    sh "rm ${tempFilePath}"
 }
-
-
-
