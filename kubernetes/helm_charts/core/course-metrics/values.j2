@@ -8,7 +8,7 @@ env:
   javaoptions: {{search_java_mem_limit|default('-Xmx600m')}}
 
 replicaCount: {{search_replicacount|default(1)}}
-repository:  'course-metrics'
+repository: {{search_repository|default('course-metrics')}}
 image_tag: {{ image_tag }}
 resources:
   requests:
@@ -18,7 +18,7 @@ resources:
     cpu: {{search_cpu_limit|default('1')}}
     memory: {{search_mem_limit|default('1024Mi')}}
 network:
-  port: 9004
+  port: 8080
   targetport: 9000
 strategy:
   type: RollingUpdate
