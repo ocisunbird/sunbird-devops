@@ -1,4 +1,5 @@
 @Library('deploy-conf') _
+
 node() {
     try {
         String ANSI_GREEN = "\u001B[32m"
@@ -9,10 +10,9 @@ node() {
 
         stage('checkout public repo') {
             folder = new File("$WORKSPACE/.git")
-            if (folder.exists())
-            {
-               println "Found .git folder. Clearing it.."
-               sh'git clean -fxd'
+            if (folder.exists()) {
+                println "Found .git folder. Clearing it.."
+                sh'git clean -fxd'
             }
             checkout scm
         }
@@ -49,36 +49,27 @@ node() {
     }
 }
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 def email_notify() {
     def buildNumber = env.BUILD_NUMBER
     def jobUrl = env.JOB_URL
 
-    // Capture the pipeline output as a string
-    def pipelineOutput = """
-    $JOB_NAME - Pipeline ${currentBuild.result}.
-    Build Number: $buildNumber
-    Job URL: $jobUrl
-    Hello, This is an email from Dev Jenkins pipeline.
-    """
+    // Execute the Ansible playbook and capture its output
+    def ansibleOutput = sh(script: 'ansible-playbook /var/lib/jenkins/workspace/OpsAdministration/dev/Core/SSL_Expiry/ansible/check_ssl_expiry.yml', returnStdout: true).trim()
 
-    // Get the current date in DD-MM-YYYY format
-    def currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-
-    // Write the output to a temporary file with date in the file name
-    def tempFilePath = "${WORKSPACE}/${JOB_NAME}_output_${currentDate}.txt"
-    writeFile file: tempFilePath, text: pipelineOutput
-
-    // Send email notification using the 'emailext' step with attachments
-    emailext (
-        subject: 'Jenkins Pipeline Status',
-        body: """$JOB_NAME - Pipeline ${currentBuild.result}.
+    // Send email notification using the built-in 'mail' step
+    mail (
+        subject: 'Jenkins SSL_Expiry Pipeline Status',
+        $JOB_NAME - Pipeline ${currentBuild.result}.
+        
         Build Number: $buildNumber
         Job URL: $jobUrl
-        Hello, This is an email from Dev Jenkins pipeline.""",
-        to: 'alertsdiksha@trigyn.com',
-        attachmentsPattern: "**/${JOB_NAME}_output_${currentDate}.txt" // Attach the temporary output file using Ant GLOB pattern
+        
+        Ansible Playbook Output:
+        ${ansibleOutput}
+        
+        
+        This is an email from the Dev Jenkins pipeline.
+        """,
+        to: 'alertsdiksha@trigyn.com'
     )
 }
