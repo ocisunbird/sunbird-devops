@@ -24,6 +24,13 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.imagepullsecrets }}
 {{- end }}
+      volumes:
+        - name: {{ .Chart.Name }}-config
+          configMap:
+            name: {{ .Chart.Name }}-config
+        - name: {{ .Chart.Name }}-xml-config
+          configMap:
+            name: {{ .Chart.Name }}-xml-config
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.dockerhub }}/{{ .Values.repository }}:{{ .Values.image_tag }}"
@@ -46,6 +53,13 @@ spec:
         readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 10 }}
         {{- end }}
+        volumeMounts:
+          - name: {{ .Chart.Name }}-config
+            mountPath: /home/sunbird/search-service-1.0-SNAPSHOT/config/application.conf
+            subPath: search-service_application.conf
+          - name: {{ .Chart.Name }}-xml-config
+            mountPath: /home/sunbird/search-service-1.0-SNAPSHOT/config/logback.xml
+            subPath: search-service_logback.xml
           
 ---
 apiVersion: v1
