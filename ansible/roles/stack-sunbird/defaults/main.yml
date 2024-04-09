@@ -266,6 +266,7 @@ service_env:
   ml-core-service: ../../../../ansible/roles/stack-sunbird/templates/ml-core-service.env
   ml-projects-service: ../../../../ansible/roles/stack-sunbird/templates/ml-projects-service.env
   inbound: ../../../../ansible/roles/stack-sunbird/templates/inbound.env
+  course-metrics: ../../../../ansible/roles/stack-sunbird/templates/course-metrics.env
   outbound:
     - ../../../../ansible/roles/stack-sunbird/templates/outbound.env
     - ../../../../ansible/roles/stack-sunbird/templates/outbound_logback.xml
@@ -796,6 +797,25 @@ dial_liveness_readiness:
   livenessProbe:
     httpGet:
       path: /health
+      port: 9000
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 2
+
+course_metrics_liveness_readiness:
+  healthcheck: true
+  readinessProbe:
+    httpGet:
+      path: /service/health
+      port: 9000
+    initialDelaySeconds: 15
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 2
+  livenessProbe:
+    httpGet:
+      path: /service/health
       port: 9000
     initialDelaySeconds: 15
     periodSeconds: 15
