@@ -79,6 +79,6 @@ def email_notify() {
         Job URL: $jobUrl
         Hello, This is an email from Dev Jenkins pipeline.""",
         to: 'alertsdiksha@trigyn.com',
-        attachmentsPattern: "${WORKSPACE}/*_output_${currentDate}.txt" // Attach the temporary output file using Ant GLOB pattern
+        attachmentsPattern: "**/${JOB_NAME}_output_${currentDate}.txt" // Attach the temporary output file using Ant GLOB pattern
     )
 }
