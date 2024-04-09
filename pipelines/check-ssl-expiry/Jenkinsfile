@@ -64,15 +64,13 @@ def email_notify() {
     """
 
     def currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
-    def attachmentsPattern = "**/SSL_Expiry_output_${currentDate}.txt"
-
-    writeFile file: "SSL_Expiry_output_${currentDate}.txt", text: emailContent
+    def tempFilePath = "SSL_Expiry_output_${currentDate}.txt"
+    writeFile file: tempFilePath, text: emailContent
 
     emailext (
         subject: 'Jenkins Pipeline Status',
         body: emailContent,
         to: 'alertsdiksha@trigyn.com',
-        attachmentsPattern: attachmentsPattern
+        attachmentsPattern: tempFilePath
     )
 }
-
