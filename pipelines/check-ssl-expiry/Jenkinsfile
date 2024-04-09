@@ -71,15 +71,14 @@ def email_notify() {
     def tempFilePath = "${WORKSPACE}/${JOB_NAME}_output_${currentDate}.txt"
     writeFile file: tempFilePath, text: pipelineOutput
 
-    // Send email notification using the built-in 'mail' step with the attachment
-    mail (
+    // Send email notification using the 'emailext' step with attachments
+    emailext (
         subject: 'Jenkins Pipeline Status',
         body: """$JOB_NAME - Pipeline ${currentBuild.result}.
         Build Number: $buildNumber
         Job URL: $jobUrl
         Hello, This is an email from Dev Jenkins pipeline.""",
         to: 'alertsdiksha@trigyn.com',
-        attachments: [file(tempFilePath)]
+        attachmentsPattern: tempFilePath // Attach the temporary output file
     )
-
 }
