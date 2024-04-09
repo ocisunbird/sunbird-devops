@@ -251,8 +251,8 @@ service_env:
     - ../../../../ansible/roles/stack-sunbird/templates/search-service_application.conf
     - ../../../../ansible/roles/stack-sunbird/templates/search-service_logback.xml
   course-metrics:
-    - ../../../../ansible/roles/stack-sunbird/templates/sunbird_lms-service.env
-    - ../../../../ansible/roles/stack-sunbird/templates/lms-service_logback.xml
+    - ../../../../ansible/roles/stack-sunbird/templates/search-service_application.conf
+    - ../../../../ansible/roles/stack-sunbird/templates/search-service_logback.xml
   taxonomy:
     - ../../../../ansible/roles/stack-sunbird/templates/taxonomy-service_application.conf
     - ../../../../ansible/roles/stack-sunbird/templates/taxonomy-service_logback.xml
