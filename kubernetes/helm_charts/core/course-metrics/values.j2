@@ -18,7 +18,7 @@ resources:
     cpu: {{search_cpu_limit|default('1')}}
     memory: {{search_mem_limit|default('1024Mi')}}
 network:
-  port: 8080
+  port: 9000
   targetport: 9000
 strategy:
   type: RollingUpdate
