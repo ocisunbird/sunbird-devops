@@ -8,7 +8,7 @@ env:
   javaoptions: {{search_java_mem_limit|default('-Xmx600m')}}
 
 replicaCount: {{search_replicacount|default(1)}}
-repository: {{search_repository|default('search-service')}}
+repository:  'course-metrics'
 image_tag: {{ image_tag }}
 resources:
   requests:
