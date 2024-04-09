@@ -12,20 +12,20 @@ node() {
             folder = new File("$WORKSPACE/.git")
             if (folder.exists()) {
                 println "Found .git folder. Clearing it.."
-                sh'git clean -fxd'
+                sh 'git clean -fxd'
             }
             checkout scm
         }
 
         ansiColor('xterm') {
-            stage('deploy'){
-                values = [:]
-                envDir = sh(returnStdout: true, script: "echo $JOB_NAME").split('/')[-3].trim()
-                module = sh(returnStdout: true, script: "echo $JOB_NAME").split('/')[-2].trim()
-                jobName = sh(returnStdout: true, script: "echo $JOB_NAME").split('/')[-1].trim()
-                currentWs = sh(returnStdout: true, script: 'pwd').trim()
-                ansiblePlaybook = "${currentWs}/ansible/check_ssl_expiry.yml"
-                ansibleExtraArgs = "--vault-password-file /var/lib/jenkins/secrets/vault-pass"
+            stage('deploy') {
+                def values = [:]
+                def envDir = sh(returnStdout: true, script: "echo $JOB_NAME").split('/')[-3].trim()
+                def module = sh(returnStdout: true, script: "echo $JOB_NAME").split('/')[-2].trim()
+                def jobName = sh(returnStdout: true, script: "echo $JOB_NAME").split('/')[-1].trim()
+                def currentWs = sh(returnStdout: true, script: 'pwd').trim()
+                def ansiblePlaybook = "${currentWs}/ansible/check_ssl_expiry.yml"
+                def ansibleExtraArgs = "--vault-password-file /var/lib/jenkins/secrets/vault-pass"
                 values.put('currentWs', currentWs)
                 values.put('env', envDir)
                 values.put('module', module)
@@ -42,7 +42,7 @@ node() {
     catch (err) {
         currentBuild.result = 'FAILURE'
         throw err
-    }    
+    }
     finally {
         slack_notify(currentBuild.result)
         email_notify()
@@ -59,6 +59,7 @@ def email_notify() {
     // Send email notification using the built-in 'mail' step
     mail (
         subject: 'Jenkins SSL_Expiry Pipeline Status',
+        body: """
         $JOB_NAME - Pipeline ${currentBuild.result}.
         
         Build Number: $buildNumber
