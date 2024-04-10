@@ -67,7 +67,10 @@ def email_notify() {
         
         Build Number: $buildNumber
         Job URL: $jobUrl
-                       
+        
+        Ansible Playbook Output:
+        ${ansibleOutput}
+        
         This is an email from the Dev Jenkins pipeline.
         """,
         to: 'alertsdiksha@trigyn.com'
