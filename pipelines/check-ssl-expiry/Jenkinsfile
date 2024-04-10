@@ -60,7 +60,7 @@ def email_notify() {
     ansibleOutput = ansibleOutput.replaceAll(/\u001B\[[0-9;]*m/, '')
 
     // Remove specific lines from the Ansible output
-    ansibleOutput = ansibleOutput.replaceAll(/Ansible Playbook Output:(.*?)PLAY RECAP(.*?)/s, '')
+    ansibleOutput = ansibleOutput.replaceAll(/Ansible Playbook Output:(.*?)PLAY RECAP(.*?)/, '').trim()
 
     // Send email notification using the built-in 'mail' step
     mail (
