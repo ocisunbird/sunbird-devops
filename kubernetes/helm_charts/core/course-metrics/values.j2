@@ -33,3 +33,6 @@ autoscaling:
   maxReplicas: {{ coursemetrics_autoscaling_maxReplicas|default(2) }}
   targetCPUUtilizationPercentage: {{ coursemetrics_autoscaling_targetCPUUtilizationPercentage|default(60) }}
   targetMemoryUtilizationPercentage: {{ coursemetrics_autoscaling_targetMemoryUtilizationPercentage|default('') }}
+
+annotations: {{course_metrics_public_ingress_service_annotations|to_json}}
+coursemetrics_ingress_type: {{ course_metrics_ingress_type | default('LoadBalancer') }}

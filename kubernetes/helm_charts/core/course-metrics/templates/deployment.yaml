@@ -49,9 +49,12 @@ kind: Service
 metadata:
   name: {{ .Chart.Name }}-service
   namespace: {{ .Values.namespace }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
   labels:
     app: {{ .Chart.Name }}
 spec:
+  type: {{ .Values.coursemetrics_ingress_type }}
   ports:
   - name: http-{{ .Chart.Name }}
     protocol: TCP
