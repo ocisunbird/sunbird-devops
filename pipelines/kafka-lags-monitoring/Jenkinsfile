@@ -71,7 +71,7 @@ def email_notify() {
         Job URL: $jobUrl
         
         Ansible Playbook Output:
-        ${ansibleOutput}
+        $ansibleOutput 
         
         This is an email from the Dev Jenkins pipeline.
         """,
