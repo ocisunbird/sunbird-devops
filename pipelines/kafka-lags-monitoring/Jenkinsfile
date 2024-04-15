@@ -63,7 +63,7 @@ def email_notify() {
 
     // Send email notification using the built-in 'mail' step
     mail (
-        subject: 'Jenkins SSL_Expiry Pipeline Status',
+        subject: 'Jenkins Kafka_Lag_Monitoring Pipeline Status',
         body: """
         $JOB_NAME - Pipeline ${currentBuild.result}.
         
