@@ -1,50 +1,27 @@
-- name: Display Kafka consumer group status
-  hosts: ingestion-cluster-kafka[0]  # Targeting the first host (10.90.8.114) from the host group
-  gather_facts: no
+---
+- name: Execute Kafka Consumer Groups Script
+  hosts: ingestion-cluster-kafka
+  become: yes  # If sudo/root access is required to copy the script and install dependencies
+
   tasks:
-    - name: Loop through Kafka consumer groups and check lag status
-      command: /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server "localhost:9092" --describe --group "{{ item }}"
-      register: consumer_group_output
-      loop:
-        - "ntpprod-activity-aggregate-group"
-        - "ntpprod-assessment-aggregator-group"
-        - "ntpprod-audit-event-generator-group"
-        - "ntpprod-audit-history-indexer-group"
-        - "ntpprod-certificate-generator-group"
-        - "ntpprod-collection-cert-pre-processor-group"
-        - "ntpprod-asset-enrichment-group"
-        - "ntpprod-enrolment-reconciliation-group"
-        - "ntpprod-ingest-router-group"
-        - "ntpprod-post-publish-processor-group"
-        - "ntpprod-search-indexer-group"
-      loop_control:
-        label: "{{ item }}"
+    - name: Copy Python Script to Target Servers
+      copy:
+        src: /opt/scripts/check_kafka_group-status.py  # Update the source path accordingly
+        dest: /opt/scripts/check_kafka_group-status.py
+        mode: 0755  # Set execute permissions on the copied script
+        remote_src: yes  # Check for the file on remote servers
 
-    - name: Print Kafka lag status for each group
+    # Skip the installation task since tabulate is already installed manually
+    # - name: Install tabulate Python library
+    #   pip:
+    #     name: tabulate
+    #     state: present
+    #     executable: /usr/bin/python3  # Path to the Python 3 interpreter on your target servers
+
+    - name: Execute Python Script
+      command: /usr/bin/python3 /opt/scripts/check_kafka_group-status.py
+      register: script_output
+
+    - name: Print Script Output
       debug:
-        msg: |
-          ----------------------------------------
-          Consumer group '{{ item.item }}' has no active members.
-
-          GROUP                        TOPIC                         PARTITION  CURRENT-OFFSET  LOG-END-OFFSET  LAG             CONSUMER-ID     HOST            CLIENT-ID
-          {{ item.stdout | regex_replace('^[\\s\\S]*GROUP[^\\n]*\\n([\\s\\S]*)$', '\\1') | regex_replace('(\\n)+', '\\n') | regex_replace('^\\n|\\n$', '') }}
-
-          {% set lag = item.stdout | regex_replace('^[\\s\\S]*LAG[^0-9]*([0-9]+)[\\s\\S]*$', '\\1') | int %}
-          {% if item.item == 'ntpprod-activity-aggregate-group' %}
-          {% if lag <= 400 %}
-          Kafka lag for group '{{ item.item }}' is normal (0 to 400)
-          {% else %}
-          Kafka lag for group '{{ item.item }}' is high
-          {% endif %}
-          {% endif %}
-
-          {% if item.item in ['ntpprod-assessment-aggregator-group', 'ntpprod-audit-event-generator-group', 'ntpprod-audit-history-indexer-group', 'ntpprod-certificate-generator-group', 'ntpprod-collection-cert-pre-processor-group', 'ntpprod-asset-enrichment-group', 'ntpprod-enrolment-reconciliation-group', 'ntpprod-ingest-router-group', 'ntpprod-post-publish-processor-group', 'ntpprod-search-indexer-group'] %}
-          {% if lag <= 9 %}
-          Kafka lag for group '{{ item.item }}' is normal (0 to 9)
-          {% else %}
-          Kafka lag for group '{{ item.item }}' is high
-          {% endif %}
-          {% endif %}
-      loop: "{{ consumer_group_output.results }}"
-      loop_control:
-        label: "{{ item.item }}"
+        msg: "{{ script_output.stdout }}"
