@@ -52,10 +52,14 @@ node() {
 def email_notify() {
     def buildNumber = env.BUILD_NUMBER
     def jobUrl = env.JOB_URL
-    
-    // Capture the output of the grep command
-    def yesterday_date_yyyy_mm_dd = sh(script: "grep '${yesterday_date_yyyy_mm_dd}' /var/log/cassandra/backup.log | grep -E '100%'", returnStdout: true).trim()
  
+    // Execute the Ansible playbook and capture its output
+    def ansibleOutput = sh(script: 'ansible-playbook /var/lib/jenkins/workspace/OpsAdministration/dev/Core/SSL_Expiry/ansible/check_ssl_expiry.yml', returnStdout: true).trim()
+
+    // Strip ANSI escape codes from the output
+    ansibleOutput = ansibleOutput.replaceAll(/\u001B\[[0-9;]*m/, '')
+    
+
     // Send email notification using the built-in 'mail' step
     mail (
         subject: 'Jenkins Pipeline Status',
