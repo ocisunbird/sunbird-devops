@@ -25,7 +25,7 @@ node() {
                     envDir = sh(returnStdout: true, script: "echo $JOB_NAME").split('/')[-3].trim()
                     module = sh(returnStdout: true, script: "echo $JOB_NAME").split('/')[-2].trim()
                     jobName = sh(returnStdout: true, script: "echo $JOB_NAME").split('/')[-1].trim()
-                    ansiblePlaybook = "${currentWs}/ansible/kafka-lags-monitoring.yml"
+                    ansiblePlaybook = "${currentWs}/ansible/kafka_lags_monitoring.yml"
                     ansibleExtraArgs = "--vault-password-file /var/lib/jenkins/secrets/vault-pass -vv"
                     values.put('currentWs', currentWs)
                     values.put('env', envDir)
@@ -49,4 +49,22 @@ node() {
         slack_notify(currentBuild.result)
         email_notify()
     }
+}
+
+def email_notify() {
+    def buildNumber = env.BUILD_NUMBER
+    def jobUrl = env.JOB_URL
+ 
+    // Send email notification using the built-in 'mail' step
+    mail (
+        subject: 'Jenkins Pipeline Status',
+        body: """$JOB_NAME - Pipeline ${currentBuild.result}.
+ 
+        Build Number: $buildNumber
+ 
+        Job URL: $jobUrl
+ 
+        Hello, This is an email from Prod Jenkins Pipeline.""",
+        to: 'alertsdiksha@trigyn.com'
+    )
 }
