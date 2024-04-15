@@ -51,21 +51,15 @@ node() {
     }
 }
 
-def email_notify() {
+def email_notify(buildResult, ansibleOutput) {
     def buildNumber = env.BUILD_NUMBER
     def jobUrl = env.JOB_URL
-
-    // Execute the Ansible playbook and capture its output
-    def ansibleOutput = sh(script: 'ansible-playbook /var/lib/jenkins/workspace/OpsAdministration/dev/Core/Kafka_Lag_Monitoring/ansible/kafka_lags_monitoring.yml', returnStdout: true).trim()
-
-    // Strip ANSI escape codes from the output
-    ansibleOutput = ansibleOutput.replaceAll(/\u001B\[[0-9;]*m/, '')
 
     // Send email notification using the built-in 'mail' step
     mail (
         subject: 'Jenkins Kafka_Lag_Monitoring Pipeline Status',
         body: """
-        $JOB_NAME - Pipeline ${currentBuild.result}.
+        $JOB_NAME - Pipeline ${buildResult}.
         
         Build Number: $buildNumber
         Job URL: $jobUrl
