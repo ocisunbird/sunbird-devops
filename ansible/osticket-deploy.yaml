@@ -36,7 +36,7 @@
     # Add the rsync task here
     - name: Copy inventory files using rsync
       ansible.builtin.command:
-        cmd: rsync -Lkr /var/lib/jenkins/workspace/OpsAdministration/production/Core/DeployOsticket/private/ansible/inventory/production/DeployOsticket/* /var/lib/jenkins/workspace/OpsAdministration/production/Core/DeployOsticket/ansible/inventory/env/
+        cmd: rsync -avLkr /var/lib/jenkins/workspace/OpsAdministration/production/Core/DeployOsticket/private/ansible/inventory/production/Core/ /var/lib/jenkins/workspace/OpsAdministration/production/Core/DeployOsticket/ansible/inventory/env/
 
     - name: Print Script Output
       debug:
