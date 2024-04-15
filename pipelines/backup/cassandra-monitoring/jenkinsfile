@@ -53,13 +53,6 @@ def email_notify() {
     def buildNumber = env.BUILD_NUMBER
     def jobUrl = env.JOB_URL
  
-    // Execute the Ansible playbook and capture its output
-    def ansibleOutput = sh(script: 'ansible-playbook /var/lib/jenkins/workspace/OpsAdministration/production/Core/Cassandra_backup_Monitoring/ansible/cassandra-backup-monitoring.yml', returnStdout: true).trim()
-
-    // Strip ANSI escape codes from the output
-    ansibleOutput = ansibleOutput.replaceAll(/\u001B\[[0-9;]*m/, '')
-    
-
     // Send email notification using the built-in 'mail' step
     mail (
         subject: 'Jenkins Pipeline Status',
