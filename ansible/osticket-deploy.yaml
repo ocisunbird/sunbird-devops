@@ -1,0 +1,38 @@
+
+---
+- name: SSH to osticket and Print Output
+  hosts: "{{ remote }}"
+  become: yes
+  vars_files:
+    - ['{{inventory_dir}}/secrets.yml', 'secrets/{{env}}.yml']
+  # roles:
+  #   - osticketdeploy
+  # tags:
+  #   - osticket-deploy
+  gather_facts: no
+
+  tasks:
+    # - name: Go to the OsTicker Dir
+    #   command: cd /var/www/osTicket/osTicket/osTicket-v1.18
+
+    # - name: Execute Python Script
+    #   command: sudo git checkout "{{ osticket_branch }}"
+    #   register: script_output
+
+    - name: Checkout Git repository
+      ansible.builtin.git:
+        repo: https://github.com/dicdiksha/diksha-support.git
+        dest: /var/www/osTicket/osTicket/osTicket-v1.18
+        version: "{{ branch }}"  # Replace with the branch or tag you want to checkout
+        credential: yes
+        user: "{{ git-username }}"
+        password: "{{ git-password }}"
+
+    - name: Restart Apache
+      ansible.builtin.service:
+        name: apache2  # Modify this to match the service name on your system (e.g., httpd for CentOS/RHEL)
+        state: restarted
+
+    - name: Print Script Output
+      debug:
+        msg: "{{ script_output.stdout }}"
