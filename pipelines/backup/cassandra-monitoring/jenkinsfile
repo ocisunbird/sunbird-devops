@@ -52,9 +52,9 @@ node() {
 def email_notify() {
     def buildNumber = env.BUILD_NUMBER
     def jobUrl = env.JOB_URL
- 
+    
     // Capture the output of the grep command
-    def grepOutput = sh(script: "grep '${yesterday_date_yyyy_mm_dd}' /var/log/cassandra/backup.log | grep -E '100%'", returnStdout: true).trim()
+    def yesterday_date_yyyy_mm_dd = sh(script: "grep '${yesterday_date_yyyy_mm_dd}' /var/log/cassandra/backup.log | grep -E '100%'", returnStdout: true).trim()
  
     // Send email notification using the built-in 'mail' step
     mail (
