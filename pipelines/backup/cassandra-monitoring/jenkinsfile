@@ -62,9 +62,6 @@ def email_notify() {
  
         Job URL: $jobUrl
  
-        Results of the grep command:
-        $grepOutput
- 
         Hello, This is an email from Prod Jenkins Pipeline.""",
         to: 'alertsdiksha@trigyn.com'
     )
