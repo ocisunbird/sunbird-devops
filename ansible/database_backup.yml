@@ -1,0 +1,18 @@
+---
+- name: Execute Backup_servers.py and Print Output
+  hosts: localhost
+  gather_facts: no
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Set Execute Permissions on Python Script
+      command: chmod +x /opt/scripts/Backup_servers.py
+
+    - name: Execute Python Script
+      command: /usr/bin/python3 /opt/scripts/Backup_servers.py
+      register: script_output
+
+    - name: Print Script Output
+      debug:
+        msg: "{{ script_output.stdout }}"
