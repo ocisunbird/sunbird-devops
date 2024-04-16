@@ -1,6 +1,6 @@
 ---
 - name: Execute Kafka Consumer Groups Script
-  hosts: ingestion-cluster-kafka
+  hosts: kafka-1
   become: yes  # If sudo/root access is required to copy the script and install dependencies
 
   tasks:
