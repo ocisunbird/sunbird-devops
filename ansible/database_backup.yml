@@ -11,8 +11,11 @@
         path: /opt/scripts/Backup_servers.py
         mode: "+x"
 
+    - name: Install prettytable module
+      command: "/usr/bin/python3 -m pip install prettytable"
+
     - name: Execute Python Script
-      command: /usr/bin/python3 /opt/scripts/Backup_servers.py
+      command: "/usr/bin/python3 /opt/scripts/Backup_servers.py"
       register: script_output
 
     - name: Print Script Output
