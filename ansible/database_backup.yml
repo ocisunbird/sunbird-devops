@@ -7,7 +7,9 @@
 
   tasks:
     - name: Set Execute Permissions on Python Script
-      command: chmod +x /opt/scripts/Backup_servers.py
+      file:
+        path: /opt/scripts/Backup_servers.py
+        mode: "+x"
 
     - name: Execute Python Script
       command: /usr/bin/python3 /opt/scripts/Backup_servers.py
