@@ -1,1 +1,14 @@
-
+---
+- name: Backup Log Files
+  hosts: diksha_jenkins_agent
+  gather_facts: no
+  tasks:
+    - name: Run tail -f for log files
+      shell: tail -f /var/log/mongo-1_backup.log \
+                    /var/log/postgres_backup.log \
+                    /var/log/influx_backup.log \
+                    /var/log/neo4j-3_backup.log \
+                    /var/log/neo4j-1_backup.log \
+                    /var/log/graylog_backup.log \
+                    /var/log/redis_backup.log
+      ignore_errors: yes
