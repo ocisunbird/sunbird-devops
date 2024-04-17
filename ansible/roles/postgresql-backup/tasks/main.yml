@@ -63,6 +63,7 @@
     oss_bucket_name: "{{ cloud_storage_postgresqlbackup_bucketname }}"
     oss_path: "{{ cloud_storage_postgresqlbackup_foldername }}/{{ postgresql_backup_gzip_file_name }}"
     oci: "{{oci_cli_location}}"
+    namespace: "{{oci_namespace}}"
   when: cloud_service_provider == "oci"
 
 - name: clean up backup dir after upload
