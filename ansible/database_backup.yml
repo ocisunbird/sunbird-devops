@@ -18,6 +18,6 @@
       command: "/usr/bin/python3 /opt/scripts/Backup_servers.py"
       register: script_output
 
-    - name: Print Script Output in Blue and Bold
+    - name: Print Script Output
       debug:
-        msg: "\u001b[1m\u001b[34m{{ script_output.stdout }}\u001b[0m"
+        msg: "{{ script_output.stdout }}"
