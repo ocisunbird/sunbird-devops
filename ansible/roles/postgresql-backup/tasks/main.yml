@@ -59,7 +59,7 @@
         OCI_CLI_AUTH: "instance_principal"  
     tasks_from: upload-folder.yml
   vars:
-    local_file_or_folder_path: "{{ postgresql_backup_gzip_file_path }}"
+    local_file_or_folder_path: "{{ postgresql_backup_dir }}"
     oss_bucket_name: "{{ cloud_storage_postgresqlbackup_bucketname }}"
     oss_path: "{{ cloud_storage_postgresqlbackup_foldername }}/{{ postgresql_backup_gzip_file_name }}"
     oci: "{{oci_cli_location}}"
