@@ -12,15 +12,3 @@
       debug:
         msg: "mongo disk space: {{ mongo_disk_space.stdout_lines }}"
 
-- name: Check disk space on dp-spark-ps
-  hosts: dp-spark-ps
-  gather_facts: no
-
- ### tasks:
-    - name: Check spark disk space
-      command: df -h
-      register: spark_disk_space
-
-    - name: Print spark disk space
-      debug:
-        msg: "spark disk space: {{ spark_disk_space.stdout_lines }}"
