@@ -1,14 +1,14 @@
 ---
-- name: Execute bash script with sudo and print output
+- name: Execute certificate_count.sh and print output in Jenkins
   hosts: localhost  # You can change this to the target host(s) where the script is located
   become: yes  # Run tasks with sudo privileges
   tasks:
-    - name: Run the bash script and capture output
-      shell: "cd /opt/scripts && ./certificate_count.sh"  # Change to the correct path
+    - name: Run certificate_count.sh and capture output
+      shell: "/opt/scripts/certificate_count.sh"
       register: script_output
-      async: 180  # Set a timeout of 180 seconds (3 minutes)
-      poll: 0  # Check every second until the async task completes
+      args:
+        warn: false  # Suppress warnings in the output
 
-    - name: Print script output to console
+    - name: Print script output to Jenkins console
       debug:
         msg: "{{ script_output.stdout }}"
