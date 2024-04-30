@@ -1,5 +1,5 @@
 ---
-- name: Execute certificate_count.sh and print output in Jenkins
+- name: Execute certificate_count.sh and print output
   hosts: localhost  # You can change this to the target host(s) where the script is located
   become: yes  # Run tasks with sudo privileges
   tasks:
