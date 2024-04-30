@@ -4,7 +4,7 @@
   gather_facts: no
 
   tasks:
-    - name: Set Execute Permissions on Python Script
+    - name: Set Execute Permissions on Shell Script
       file:
         path: /opt/scripts/certificate_count.sh
         mode: "+x"
