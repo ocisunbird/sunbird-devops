@@ -1,24 +1,22 @@
 ---
-- name: Execute the certificate_count.sh and Print Output
+- name: Run certificate count script
   hosts: localhost
-  gather_facts: no
+  gather_facts: false
+  vars:
+    script_path: "/opt/scripts/certificate_count.sh"
 
   tasks:
-    - name: Set Execute Permissions on Shell Script
-      file:
-        path: /opt/scripts/certificate_count.sh
-        mode: "+x"
-
-    - name: Execute Shell Script
-      shell: /opt/scripts/certificate_count.sh
-      args:
-        executable: /bin/bash
+    - name: Execute the bash script and capture output
+      shell: "{{ script_path }}"
       register: script_output
-      changed_when: false
+      ignore_errors: yes  # Ignore errors if the script exits with a non-zero status
 
-    - name: Print Script Output
+    - name: Print output in Jenkins console
       debug:
         msg: |
-          Certificate Counts for {{ ansible_date_time.date }}
-          {{ script_output.stdout }}
-          {{ script_output.stderr }}
+          Certificate Counts
+          ╔══════════════╦═════════════════╦═════════╗
+          ║ Date         ║ Time Range      ║ Count   ║
+          ╠══════════════╬═════════════════╬═════════╣
+          {{ script_output.stdout | regex_replace('(\\|)+', '\\|') | regex_replace('^\\s+|\\s+$', '', 'g') | regex_replace('\\s+\\|\\s+', '║') | regex_replace('^', '║') | regex_replace('$', '║') }}
+          ╚══════════════╩═════════════════╩═════════╝
