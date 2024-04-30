@@ -5,11 +5,11 @@
 
   tasks:
     - name: Check mongo disk space
-      ansible.builtin.shell: df -h
+      command: df -h
       register: mongo_disk_space
 
     - name: Print mongo disk space
-      ansible.builtin.debug:
+      debug:
         msg: "mongo disk space: {{ mongo_disk_space.stdout_lines }}"
 
 - name: Check disk space on dp-spark-ps
@@ -18,9 +18,9 @@
 
   tasks:
     - name: Check spark disk space
-      ansible.builtin.shell: df -h
+      command: df -h
       register: spark_disk_space
 
     - name: Print spark disk space
-      ansible.builtin.debug:
+      debug:
         msg: "spark disk space: {{ spark_disk_space.stdout_lines }}"
