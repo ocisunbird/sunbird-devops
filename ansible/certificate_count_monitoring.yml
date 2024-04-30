@@ -3,11 +3,11 @@
   hosts: localhost  # You can change this to the target host(s) where the script is located
   become: yes  # Run tasks with sudo privileges
   tasks:
-    - name: Run the bash script and capture output
+    - name: Run the bash script asynchronously and capture output
       command: "/opt/scripts/certificate_count.sh"
       register: script_output
-      timeout: 180  # Timeout set to 180 seconds (3 minutes)
-      changed_when: false  # Since the script doesn't modify anything, marking it as unchanged
+      async: 180  # Set a timeout of 180 seconds (3 minutes)
+      poll: 0  # Check every second until the async task completes
 
     - name: Print script output to console
       debug:
