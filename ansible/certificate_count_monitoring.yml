@@ -9,10 +9,11 @@
         path: /opt/scripts/certificate_count.sh
         mode: "+x"
 
-    - name: Execute Shell Script
-      command: /opt/scripts/certificate_count.sh
+    - name: Execute Shell Script and Capture Output
+      shell: /opt/scripts/certificate_count.sh
       register: script_output
+      changed_when: false
 
     - name: Print Script Output
       debug:
-        msg: "{{ script_output.stdout }}"
+        var: script_output.stdout_lines
