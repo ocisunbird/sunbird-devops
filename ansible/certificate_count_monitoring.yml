@@ -11,9 +11,11 @@
 
     - name: Execute Shell Script and Capture Output
       shell: /opt/scripts/certificate_count.sh
+      args:
+        executable: /bin/bash
       register: script_output
       changed_when: false
 
     - name: Print Script Output
       debug:
-        var: script_output.stdout_lines
+        msg: "{{ script_output.stdout }}"
