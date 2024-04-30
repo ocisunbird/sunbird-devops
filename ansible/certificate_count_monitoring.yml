@@ -3,7 +3,7 @@
   hosts: localhost  # You can change this to the target host(s) where the script is located
   become: yes  # Run tasks with sudo privileges
   tasks:
-    - name: Run the bash script asynchronously and capture output
+    - name: Run the bash script and capture output
       shell: "cd /opt/scripts && ./certificate_count.sh"  # Change to the correct path
       register: script_output
       async: 180  # Set a timeout of 180 seconds (3 minutes)
@@ -11,4 +11,4 @@
 
     - name: Print script output to console
       debug:
-        var: script_output.stdout_lines
+        msg: "{{ script_output.stdout }}"
