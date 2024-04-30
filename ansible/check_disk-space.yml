@@ -1,1 +1,26 @@
+---
+- name: Check disk space on mongo_master
+  hosts: mongo_master
+  gather_facts: no
 
+  tasks:
+    - name: Check mongo disk space
+      ansible.builtin.shell: df -h
+      register: mongo_disk_space
+
+    - name: Print mongo disk space
+      ansible.builtin.debug:
+        msg: "mongo disk space: {{ mongo_disk_space.stdout_lines }}"
+
+- name: Check disk space on dp-spark-ps
+  hosts: dp-spark-ps
+  gather_facts: no
+
+  tasks:
+    - name: Check spark disk space
+      ansible.builtin.shell: df -h
+      register: spark_disk_space
+
+    - name: Print spark disk space
+      ansible.builtin.debug:
+        msg: "spark disk space: {{ spark_disk_space.stdout_lines }}"
