@@ -45,7 +45,7 @@ node() {
     }    
     finally {
         slack_notify(currentBuild.result)
-        // email_notify()
+        email_notify()
     }
 }
 
