@@ -1,22 +1,14 @@
 ---
-- name: Run certificate count script
-  hosts: localhost
-  gather_facts: false
-  vars:
-    script_path: "/opt/scripts/certificate_count.sh"
-
+- name: Execute bash script with sudo and print output
+  hosts: localhost  # You can change this to the target host(s) where the script is located
+  become: yes  # Run tasks with sudo privileges
   tasks:
-    - name: Execute the bash script and capture output
-      shell: "{{ script_path }}"
+    - name: Run the bash script and capture output
+      command: "/opt/scripts/certificate_count.sh"
       register: script_output
-      ignore_errors: yes  # Ignore errors if the script exits with a non-zero status
+      timeout: 180  # Timeout set to 180 seconds (3 minutes)
+      changed_when: false  # Since the script doesn't modify anything, marking it as unchanged
 
-    - name: Print output in Jenkins console
+    - name: Print script output to console
       debug:
-        msg: |
-          Certificate Counts
-          ╔══════════════╦═════════════════╦═════════╗
-          ║ Date         ║ Time Range      ║ Count   ║
-          ╠══════════════╬═════════════════╬═════════╣
-          {{ script_output.stdout | regex_replace('(\\|)+', '\\|') | regex_replace('^\\s+|\\s+$', '', 'g') | regex_replace('\\s+\\|\\s+', '║') | regex_replace('^', '║') | regex_replace('$', '║') }}
-          ╚══════════════╩═════════════════╩═════════╝
+        var: script_output.stdout_lines
