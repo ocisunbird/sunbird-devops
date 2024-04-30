@@ -9,7 +9,7 @@
         path: /opt/scripts/certificate_count.sh
         mode: "+x"
 
-    - name: Execute Shell Script and Capture Output
+    - name: Execute Shell Script
       shell: /opt/scripts/certificate_count.sh
       args:
         executable: /bin/bash
@@ -18,4 +18,7 @@
 
     - name: Print Script Output
       debug:
-        msg: "{{ script_output.stdout }}"
+        msg: |
+          Certificate Counts for {{ ansible_date_time.date }}
+          {{ script_output.stdout }}
+          {{ script_output.stderr }}
