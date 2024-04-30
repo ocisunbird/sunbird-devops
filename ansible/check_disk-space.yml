@@ -10,7 +10,7 @@
 
     - name: Print mongo disk space
       debug:
-        msg: "mongo disk space: {{ mongo_disk_space.stdout | grep('/dev/sda') }}"
+        msg: "mongo disk space: {{ mongo_disk_space.stdout | grep('/dev/sda1') }}"
 
 - name: Check disk space on dp-spark-ps
   hosts: postgresql-master-1
@@ -23,4 +23,4 @@
 
     - name: Print spark disk space
       debug:
-        msg: "postgres disk space: {{ postgres_disk_space.stdout | grep('/dev/sda') }}"
+        msg: "postgres disk space: {{ postgres_disk_space.stdout | grep('/dev/sda1') }}"
