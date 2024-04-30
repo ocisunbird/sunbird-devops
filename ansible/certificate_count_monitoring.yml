@@ -4,7 +4,7 @@
   become: yes  # Run tasks with sudo privileges
   tasks:
     - name: Run the bash script asynchronously and capture output
-      command: "/opt/scripts/certificate_count.sh"
+      shell: "cd /opt/scripts && ./certificate_count.sh"  # Change to the correct path
       register: script_output
       async: 180  # Set a timeout of 180 seconds (3 minutes)
       poll: 0  # Check every second until the async task completes
