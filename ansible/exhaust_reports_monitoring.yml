@@ -9,6 +9,6 @@
       args:
         warn: false  # Suppress warnings in the output
 
-    - name: Print script output to Jenkins console
+    - name: Print script output 
       debug:
         msg: "{{ script_output.stdout }}"
