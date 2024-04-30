@@ -16,7 +16,7 @@
   hosts: dp-spark-ps
   gather_facts: no
 
-  tasks:
+ ### tasks:
     - name: Check spark disk space
       command: df -h
       register: spark_disk_space
