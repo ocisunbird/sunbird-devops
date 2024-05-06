@@ -26,18 +26,18 @@
         msg: "postgres disk space: {{ postgres_disk_space.stdout }}"
 
 
-- name: Check disk space on spark01
-  hosts: dp-spark-ps
+- name: Check disk space on spark-sl
+  hosts: py-spark-sl
   gather_facts: no
 
   tasks:
-    - name: Check spark01 disk space
+    - name: Check spark-sl disk space
       command: df -h
-      register: spark_disk_space
+      register: sparksl_disk_space
 
     - name: Print spark disk space
       debug:
-        msg: "spark disk space: {{ spark_disk_space.stdout_lines }}" 
+        msg: "sparksl disk space: {{ sparksl_disk_space.stdout_lines }}" 
         
 - name: Check disk space on redis
   hosts: redis
