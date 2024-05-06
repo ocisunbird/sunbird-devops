@@ -91,18 +91,5 @@
       debug:
         msg: "ml-analytics-service disk space: {{ ml-analytics-service_disk_space.stdout_lines }}"        
 
-- name: Check disk space on cassandra
-  hosts: cassandra-01
-  gather_facts: no
-        
-  tasks:
-    - name: Check cassandra disk space
-      command: df -h
-      register:cassandra_disk_space
-      
-    - name: Print cassandra disk space
-      debug:
-        msg: "cassandra disk space: {{ cassandra_disk_space.stdout_lines }}" 
-
         
         
