@@ -78,18 +78,18 @@
       debug:
         msg: "learning1 disk space: {{ learning1_disk_space.stdout_lines }}" 
         
-- name: Check disk space on ml-analytics-service
-  hosts: ml-analytics-service
+- name: Check disk space on influxdb
+  hosts: dp-influx-ps
   gather_facts: no
         
   tasks:
-    - name: Check ml-analytics-service disk space
+    - name: Check influxdb disk space
       command: df -h
-      register: ml-analytics-service_disk_space
+      register: influxdb_disk_space
 
-    - name: Print ml-analytics-service disk space
+    - name: Print influxdb disk space
       debug:
-        msg: "ml-analytics-service disk space: {{ ml-analytics-service_disk_space.stdout_lines }}"        
+        msg: "influxdb disk space: {{ influxdb_disk_space.stdout_lines }}"        
 
         
         
