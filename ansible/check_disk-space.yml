@@ -37,4 +37,70 @@
 
     - name: Print spark disk space
       debug:
-        msg: "spark disk space: {{ spark_disk_space.stdout_lines }}"       
+        msg: "spark disk space: {{ spark_disk_space.stdout_lines }}" 
+        
+- name: Check disk space on redis
+  hosts: redis
+  gather_facts: no
+        
+  tasks:
+    - name: Check redis disk space
+      command: df -h
+      register: redis_disk_space
+
+    - name: Print redis disk space
+      debug:
+        msg: "redis disk space: {{ redis_disk_space.stdout_lines }}" 
+        
+- name: Check disk space on keycloak-1 
+  hosts: keycloak-1
+  gather_facts: no
+        
+  tasks:
+    - name: Check keycloak disk space
+      command: df -h
+      register: keycloak_disk_space
+
+    - name: Print keycloak disk space
+      debug:
+        msg: "keycloak disk space: {{ keycloak_disk_space.stdout_lines }}" 
+        
+- name: Check disk space on learning1 
+  hosts: learning1
+  gather_facts: no
+        
+  tasks:
+    - name: Check learning1 disk space
+      command: df -h
+      register: learning1_disk_space
+
+    - name: Print learning1 disk space
+      debug:
+        msg: "learning1 disk space: {{ learning1_disk_space.stdout_lines }}" 
+        
+- name: Check disk space on ml-analytics-service
+  hosts: ml-analytics-service
+  gather_facts: no
+        
+  tasks:
+    - name: Check ml-analytics-service disk space
+      command: df -h
+      register: ml-analytics-service_disk_space
+
+    - name: Print ml-analytics-service disk space
+      debug:
+        msg: "ml-analytics-service disk space: {{ ml-analytics-service_disk_space.stdout_lines }}"        
+
+- name: Check disk space on cassandra
+  hosts: lp-cassandra
+  gather_facts: no
+        
+  tasks:
+    - name: Check cassandra disk space
+      command: df -h
+      register:cassandra_disk_space
+
+    - name: Print cassandra disk space
+      debug:
+        msg: "cassandra disk space: {{ cassandra_disk_space.stdout_lines }}" 
+        
