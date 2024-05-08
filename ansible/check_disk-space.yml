@@ -5,7 +5,7 @@
 
   tasks:
     - name: Check mongo disk space
-      command: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
       register: mongo_disk_space
 
     - name: Print mongo disk space
@@ -18,7 +18,7 @@
 
   tasks:
     - name: Check postgres disk space
-      command: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
       register: postgres_disk_space
 
     - name: Print spark disk space
@@ -32,7 +32,7 @@
 
   tasks:
     - name: Check spark-sl disk space
-      command: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
       register: sparksl_disk_space
 
     - name: Print spark disk space
@@ -45,7 +45,7 @@
         
   tasks:
     - name: Check redis disk space
-      command: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
       register: redis_disk_space
 
     - name: Print redis disk space
@@ -58,7 +58,7 @@
         
   tasks:
     - name: Check keycloak disk space
-      command: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
       register: keycloak_disk_space
 
     - name: Print keycloak disk space
@@ -71,7 +71,7 @@
         
   tasks:
     - name: Check learning1 disk space
-      command: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
       register: learning1_disk_space
 
     - name: Print learning1 disk space
@@ -84,7 +84,7 @@
         
   tasks:
     - name: Check influxdb disk space
-      command: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
       register: influxdb_disk_space
 
     - name: Print influxdb disk space
@@ -97,7 +97,7 @@
         
   tasks:
     - name: Check cassandra disk space
-      command: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
       register: cassandra_disk_space
 
     - name: Print cassandra disk space
