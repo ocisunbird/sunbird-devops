@@ -2,106 +2,95 @@
 - name: Check disk space on mongo_master
   hosts: mongo_master
   gather_facts: no
-
   tasks:
     - name: Check mongo disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: mongo_disk_space
 
     - name: Print mongo disk space
       debug:
-        msg: "mongo disk space: {{ mongo_disk_space.stdout }}"
+        msg: "{{ mongo_disk_space.stdout }}"
 
 - name: Check disk space on postgres
   hosts: postgresql-master-1
   gather_facts: no
-
   tasks:
     - name: Check postgres disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: postgres_disk_space
 
     - name: Print spark disk space
       debug:
-        msg: "postgres disk space: {{ postgres_disk_space.stdout }}"
-
+        msg: "{{ postgres_disk_space.stdout }}"
 
 - name: Check disk space on spark-sl
   hosts: py-spark-sl
   gather_facts: no
-
   tasks:
     - name: Check spark-sl disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: sparksl_disk_space
 
     - name: Print spark disk space
       debug:
-        msg: "sparksl disk space: {{ sparksl_disk_space.stdout_lines }}" 
-        
+        msg: "{{ sparksl_disk_space.stdout }}"
+
 - name: Check disk space on redis
   hosts: redis
   gather_facts: no
-        
   tasks:
     - name: Check redis disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: redis_disk_space
 
     - name: Print redis disk space
       debug:
-        msg: "redis disk space: {{ redis_disk_space.stdout_lines }}" 
-        
-- name: Check disk space on keycloak-1 
+        msg: "{{ redis_disk_space.stdout }}"
+
+- name: Check disk space on keycloak-1
   hosts: keycloak-1
   gather_facts: no
-        
   tasks:
     - name: Check keycloak disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: keycloak_disk_space
 
     - name: Print keycloak disk space
       debug:
-        msg: "keycloak disk space: {{ keycloak_disk_space.stdout_lines }}" 
-        
-- name: Check disk space on learning1 
+        msg: "{{ keycloak_disk_space.stdout }}"
+
+- name: Check disk space on learning1
   hosts: learning1
   gather_facts: no
-        
   tasks:
     - name: Check learning1 disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: learning1_disk_space
 
     - name: Print learning1 disk space
       debug:
-        msg: "learning1 disk space: {{ learning1_disk_space.stdout_lines }}" 
-        
+        msg: "{{ learning1_disk_space.stdout }}"
+
 - name: Check disk space on influxdb
   hosts: dp-influx-ps
   gather_facts: no
-        
   tasks:
     - name: Check influxdb disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: influxdb_disk_space
 
     - name: Print influxdb disk space
       debug:
-        msg: "influxdb disk space: {{ influxdb_disk_space.stdout_lines }}"        
+        msg: "{{ influxdb_disk_space.stdout }}"
 
 - name: Check disk space on dp-cassandra
   hosts: dp-cassandra
   gather_facts: no
-        
   tasks:
     - name: Check cassandra disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/'
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: cassandra_disk_space
 
     - name: Print cassandra disk space
       debug:
-        msg: "cassandra disk space: {{ cassandra_disk_space.stdout_lines }}" 
-        
-        
+        msg: "{{ cassandra_disk_space.stdout }}"
