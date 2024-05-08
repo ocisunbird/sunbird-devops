@@ -91,17 +91,4 @@
       debug:
         msg: "influxdb disk space: {{ influxdb_disk_space.stdout_lines }}"        
 
-- name: Check disk space on dp-cassandra
-  hosts: dp-cassandra
-  gather_facts: no
-        
-  tasks:
-    - name: Check cassandra disk space
-      command: df -h
-      register:cassandra_disk_space
 
-    - name: Print cassandra disk space
-      debug:
-        msg: "dp-cassandra disk space: {{ dp-cassandra_disk_space.stdout_lines }}" 
-        
-        
