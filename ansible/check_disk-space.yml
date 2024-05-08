@@ -100,7 +100,7 @@
       command: df -h
       register:cassandra_disk_space
 
-   - name: Print cassandra disk space
+    - name: Print cassandra disk space
       debug:
         msg: "dp-cassandra disk space: {{ dp-cassandra_disk_space.stdout_lines }}" 
         
