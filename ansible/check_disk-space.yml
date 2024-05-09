@@ -6,10 +6,12 @@
     - name: Check mongo disk space
       shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: mongo_disk_space
+      changed_when: false
 
     - name: Print mongo disk space
       debug:
         msg: "{{ mongo_disk_space.stdout }}"
+      when: mongo_disk_space.stdout_lines[1].split()[4] | int > 75
 
 - name: Check disk space on postgres
   hosts: postgresql-master-1
@@ -18,10 +20,12 @@
     - name: Check postgres disk space
       shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: postgres_disk_space
+      changed_when: false
 
     - name: Print spark disk space
       debug:
         msg: "{{ postgres_disk_space.stdout }}"
+      when: postgres_disk_space.stdout_lines[1].split()[4] | int > 75
 
 - name: Check disk space on spark-sl
   hosts: py-spark-sl
@@ -30,10 +34,12 @@
     - name: Check spark-sl disk space
       shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: sparksl_disk_space
+      changed_when: false
 
     - name: Print spark disk space
       debug:
         msg: "{{ sparksl_disk_space.stdout }}"
+      when: sparksl_disk_space.stdout_lines[1].split()[4] | int > 75
 
 - name: Check disk space on redis
   hosts: redis
@@ -42,10 +48,12 @@
     - name: Check redis disk space
       shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: redis_disk_space
+      changed_when: false
 
     - name: Print redis disk space
       debug:
         msg: "{{ redis_disk_space.stdout }}"
+      when: redis_disk_space.stdout_lines[1].split()[4] | int > 75
 
 - name: Check disk space on keycloak-1
   hosts: keycloak-1
@@ -54,10 +62,12 @@
     - name: Check keycloak disk space
       shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: keycloak_disk_space
+      changed_when: false
 
     - name: Print keycloak disk space
       debug:
         msg: "{{ keycloak_disk_space.stdout }}"
+      when: keycloak_disk_space.stdout_lines[1].split()[4] | int > 75
 
 - name: Check disk space on learning1
   hosts: learning1
@@ -66,10 +76,12 @@
     - name: Check learning1 disk space
       shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: learning1_disk_space
+      changed_when: false
 
     - name: Print learning1 disk space
       debug:
         msg: "{{ learning1_disk_space.stdout }}"
+      when: learning1_disk_space.stdout_lines[1].split()[4] | int > 75
 
 - name: Check disk space on influxdb
   hosts: dp-influx-ps
@@ -78,10 +90,12 @@
     - name: Check influxdb disk space
       shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: influxdb_disk_space
+      changed_when: false
 
     - name: Print influxdb disk space
       debug:
         msg: "{{ influxdb_disk_space.stdout }}"
+      when: influxdb_disk_space.stdout_lines[1].split()[4] | int > 75
 
 - name: Check disk space on dp-cassandra
   hosts: dp-cassandra
@@ -90,7 +104,9 @@
     - name: Check cassandra disk space
       shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
       register: cassandra_disk_space
+      changed_when: false
 
     - name: Print cassandra disk space
       debug:
         msg: "{{ cassandra_disk_space.stdout }}"
+      when: cassandra_disk_space.stdout_lines[1].split()[4] | int > 75
