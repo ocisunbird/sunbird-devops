@@ -1,14 +1,18 @@
 ---
-- name: Execute exhaust_reports.sh and Print Output
-  hosts: localhost  # You can change this to the target host(s) where the script is located
-  become: yes  # Run tasks with sudo privileges
-  tasks:
-    - name: Run exhaust_reports.sh and capture output
-      shell: "/opt/scripts/exhaust_reports.sh"
-      register: script_output
-      args:
-        warn: false  # Suppress warnings in the output
+- name: Execute PostgreSQL Query and Print Output
+  hosts: localhost
+  gather_facts: no
 
-    - name: Print script output 
+  tasks:
+    - name: Set Execute Permissions on Shell Script
+      file:
+        path: /opt/scripts/exhaust_reports.sh
+        mode: "+x"
+
+    - name: Execute Shell Script
+      command: /opt/scripts/exhaust_reports.sh
+      register: script_output
+
+    - name: Print Script Output
       debug:
-        msg: "{{ script_output.stdout }}"
+        msg: "{{ script_output.stdout }}"  # Print stdout of the executed script
