@@ -60,7 +60,7 @@
   gather_facts: no
   tasks:
     - name: Check keycloak disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/' | column -t
+      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/ {print $5}'
       register: keycloak_disk_space
       changed_when: false
 
