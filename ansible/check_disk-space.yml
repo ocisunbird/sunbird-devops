@@ -60,14 +60,14 @@
   gather_facts: no
   tasks:
     - name: Check keycloak disk space
-      shell: df -h | awk '/Filesystem|\/dev\/sda1\s/ {print $5}'
+      shell:  df -h | awk '/Filesystem|\/dev\/sda1\s/ {print $5}'
       register: keycloak_disk_space
       changed_when: false
 
     - name: Print keycloak disk space
       debug:
         msg: "{{ keycloak_disk_space.stdout }}"
-      when: keycloak_disk_space.stdout_lines[1].split()[4] | int > 5
+  ##when: keycloak_disk_space.stdout_lines[1].split()[4] | 
 
 - name: Check disk space on learning1
   hosts: learning1
