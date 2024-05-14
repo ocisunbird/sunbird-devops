@@ -11,7 +11,7 @@
     - name: Print mongo disk space
       debug:
         msg: "{{ mongo_disk_space.stdout }}"
-      when: mongo_disk_space.stdout_lines[1].split()[4] | int > 75
+      when: mongo_disk_space.stdout_lines[1].split()[4] | int > 5
 
 - name: Check disk space on postgres
   hosts: postgresql-master-1
@@ -25,7 +25,7 @@
     - name: Print spark disk space
       debug:
         msg: "{{ postgres_disk_space.stdout }}"
-      when: postgres_disk_space.stdout_lines[1].split()[4] | int > 75
+      when: postgres_disk_space.stdout_lines[1].split()[4] | int > 5
 
 - name: Check disk space on spark-sl
   hosts: py-spark-sl
@@ -39,7 +39,7 @@
     - name: Print spark disk space
       debug:
         msg: "{{ sparksl_disk_space.stdout }}"
-      when: sparksl_disk_space.stdout_lines[1].split()[4] | int > 75
+      when: sparksl_disk_space.stdout_lines[1].split()[4] | int > 5
 
 - name: Check disk space on redis
   hosts: redis
@@ -53,7 +53,7 @@
     - name: Print redis disk space
       debug:
         msg: "{{ redis_disk_space.stdout }}"
-      when: redis_disk_space.stdout_lines[1].split()[4] | int > 75
+      when: redis_disk_space.stdout_lines[1].split()[4] | int > 5
 
 - name: Check disk space on keycloak-1
   hosts: keycloak-1
@@ -67,7 +67,7 @@
     - name: Print keycloak disk space
       debug:
         msg: "{{ keycloak_disk_space.stdout }}"
-      when: keycloak_disk_space.stdout_lines[1].split()[4] | int > 75
+      when: keycloak_disk_space.stdout_lines[1].split()[4] | int > 5
 
 - name: Check disk space on learning1
   hosts: learning1
@@ -81,7 +81,7 @@
     - name: Print learning1 disk space
       debug:
         msg: "{{ learning1_disk_space.stdout }}"
-      when: learning1_disk_space.stdout_lines[1].split()[4] | int > 75
+      when: learning1_disk_space.stdout_lines[1].split()[4] | int > 5
 
 - name: Check disk space on influxdb
   hosts: dp-influx-ps
@@ -95,7 +95,7 @@
     - name: Print influxdb disk space
       debug:
         msg: "{{ influxdb_disk_space.stdout }}"
-      when: influxdb_disk_space.stdout_lines[1].split()[4] | int > 75
+      when: influxdb_disk_space.stdout_lines[1].split()[4] | int > 5
 
 - name: Check disk space on dp-cassandra
   hosts: dp-cassandra
@@ -109,4 +109,4 @@
     - name: Print cassandra disk space
       debug:
         msg: "{{ cassandra_disk_space.stdout }}"
-      when: cassandra_disk_space.stdout_lines[1].split()[4] | int > 75
+      when: cassandra_disk_space.stdout_lines[1].split()[4] | int > 5
