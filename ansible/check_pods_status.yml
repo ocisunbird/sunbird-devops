@@ -5,7 +5,8 @@
     KUBECONFIG: "{{ kubeconfig_path }}"
   tasks:
     - name: Check Running Pods in Namespaces
-      shell: kubectl get pods -A --field-selector=status.phase=Running -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,NAMESPACE:.metadata.namespace,READY://:.status.containerStatuses[0].ready,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp
+      shell: |
+        kubectl get pods -A --field-selector=status.phase=Running -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,READY:.status.replicas,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp --no-headers | sort | uniq
       register: running_pods
       changed_when: false
       failed_when: false
@@ -14,13 +15,14 @@
       debug:
         msg: |
           NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
-          {% for line in running_pods.stdout_lines[1:] %}
-          {{ line }}
+          {% for line in running_pods.stdout_lines %}
+          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "0" }}/{{ line.split()[2] if line.split()[2] != "<none>" else "0" }}   {{ line.split()[3] }}     {{ line.split()[4] }}          {{ ((ansible_date_time.epoch|int - line.split()[-1] | to_datetime).days | default(0)) }}d
           {% endfor %}
-      when: running_pods.stdout_lines | length > 1
+      when: running_pods.stdout_lines | length > 0
 
     - name: Check Non-Running Pods in Namespaces
-      shell: kubectl get pods -A --field-selector=status.phase!=Running -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,NAMESPACE:.metadata.namespace,READY://:.status.containerStatuses[0].ready,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp
+      shell: |
+        kubectl get pods -A --field-selector=status.phase!=Running -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,READY:.status.replicas,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp --no-headers | sort | uniq
       register: non_running_pods
       changed_when: false
       failed_when: false
@@ -29,7 +31,7 @@
       debug:
         msg: |
           NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
-          {% for line in non_running_pods.stdout_lines[1:] %}
-          {{ line }}
+          {% for line in non_running_pods.stdout_lines %}
+          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "0" }}/{{ line.split()[2] if line.split()[2] != "<none>" else "0" }}   {{ line.split()[3] }}     {{ line.split()[4] }}          {{ ((ansible_date_time.epoch|int - line.split()[-1] | to_datetime).days | default(0)) }}d
           {% endfor %}
-      when: non_running_pods.stdout_lines | length > 1
+      when: non_running_pods.stdout_lines | length > 0
