@@ -14,9 +14,9 @@
     - name: Print Running Pods
       debug:
         msg: |
-          NAMESPACE           NAME                                     READY   STATUS    RESTARTS   AGE
+          NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
           {% for line in running_pods.stdout_lines[1:] %}
-          {{ line.split()[0].ljust(20) }}{{ line.split()[1].ljust(40) }}{{ line.split()[2].ljust(10) if line.split()[2] != "<none>" else "" }}{{ line.split()[3].ljust(10) }}{{ line.split()[4].ljust(10) }}{{ ((ansible_date_time.epoch|int - line.split()[-1][:-1].replace('T',' ') | to_datetime).days) }}d
+          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "" }}     {{ line.split()[3] }}     {{ line.split()[4] }}     {{ ((ansible_date_time.epoch|int - line.split()[-1][:-1].replace('T',' ') | to_datetime).days) }}d
           {% endfor %}
       when: running_pods.stdout_lines | length > 1
 
@@ -29,8 +29,8 @@
     - name: Print Non-Running Pods
       debug:
         msg: |
-          NAMESPACE           NAME                                     READY   STATUS    RESTARTS   AGE
+          NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
           {% for line in non_running_pods.stdout_lines[1:] %}
-          {{ line.split()[0].ljust(20) }}{{ line.split()[1].ljust(40) }}{{ line.split()[2].ljust(10) if line.split()[2] != "<none>" else "" }}{{ line.split()[3].ljust(10) }}{{ line.split()[4].ljust(10) }}{{ ((ansible_date_time.epoch|int - line.split()[-1][:-1].replace('T',' ') | to_datetime).days) }}d
+          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "" }}     {{ line.split()[3] }}     {{ line.split()[4] }}     {{ ((ansible_date_time.epoch|int - line.split()[-1][:-1].replace('T',' ') | to_datetime).days) }}d
           {% endfor %}
       when: non_running_pods.stdout_lines | length > 1
