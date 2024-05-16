@@ -1,3 +1,4 @@
+---
 - name: Check Pod Status in All Namespaces
   hosts: localhost
   gather_facts: no
@@ -5,27 +6,31 @@
     KUBECONFIG: "{{ kubeconfig_path }}"
   tasks:
     - name: Check Running Pods in Namespaces
-      shell: kubectl get pods -A --field-selector=status.phase=Running -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].readyReplicas/,.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp --sort-by=.metadata.creationTimestamp
+      shell: kubectl get pods -A --field-selector=status.phase=Running -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].ready,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp
       register: running_pods
       changed_when: false
       failed_when: false
 
+    - name: Print Running Pods
+      debug:
+        msg: |
+          NAME                                     READY   STATUS    RESTARTS   AGE
+          {% for line in running_pods.stdout_lines[1:] %}
+          {{ line }}
+          {% endfor %}
+      when: running_pods.stdout_lines | length > 1
+
     - name: Check Non-Running Pods in Namespaces
-      shell: kubectl get pods -A --field-selector=status.phase!=Running -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].readyReplicas/,.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp --sort-by=.metadata.creationTimestamp
+      shell: kubectl get pods -A --field-selector=status.phase!=Running -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].ready,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp
       register: non_running_pods
       changed_when: false
       failed_when: false
 
-    - name: Generate Running Pods Output
-      template:
-        src: pod_status_template.j2
-        dest: "{{ playbook_dir }}/running_pods_output.txt"
-      vars:
-        pods_output: "{{ running_pods.stdout }}"
-
-    - name: Generate Non-Running Pods Output
-      template:
-        src: pod_status_template.j2
-        dest: "{{ playbook_dir }}/non_running_pods_output.txt"
-      vars:
-        pods_output: "{{ non_running_pods.stdout }}"
+    - name: Print Non-Running Pods
+      debug:
+        msg: |
+          NAME                                     READY   STATUS    RESTARTS   AGE
+          {% for line in non_running_pods.stdout_lines[1:] %}
+          {{ line }}
+          {% endfor %}
+      when: non_running_pods.stdout_lines | length > 1
