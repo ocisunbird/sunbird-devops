@@ -10,6 +10,10 @@
       changed_when: false
       failed_when: false
 
+    - name: Debug Running Pods Output
+      debug:
+        var: running_pods
+
     - name: Print Running Pods
       debug:
         msg: |
@@ -24,6 +28,10 @@
       register: non_running_pods
       changed_when: false
       failed_when: false
+
+    - name: Debug Non-Running Pods Output
+      debug:
+        var: non_running_pods
 
     - name: Print Non-Running Pods
       debug:
