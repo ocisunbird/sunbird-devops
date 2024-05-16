@@ -15,7 +15,7 @@
         msg: |
           NAMESPACE             NAME                                      READY    STATUS    RESTARTS   AGE
           {% for line in running_pods.stdout_lines[1:] %}
-          {{ line.split()[0] }}   {{ line.split()[1] }}                     {{ line.split()[2] }}/{{ line.split()[3] }}   {{ line.split()[4] }}   {{ line.split()[5] }}   {{ line.split()[6] }}
+          {{ line.split()[0] }}   {{ line.split()[1] }}                     {{ line.split()[2] }}/{{ line.split()[3] }}   {{ line.split()[4] }}   {{ line.split()[5] }}   {{ line.split()[6] if line.split() | length > 6 else "" }}
           {% endfor %}
       when: running_pods.stdout_lines | length > 1
 
@@ -30,6 +30,6 @@
         msg: |
           NAMESPACE             NAME                                      READY    STATUS    RESTARTS   AGE
           {% for line in non_running_pods.stdout_lines[1:] %}
-          {{ line.split()[0] }}   {{ line.split()[1] }}                     {{ line.split()[2] }}/{{ line.split()[3] }}   {{ line.split()[4] }}   {{ line.split()[5] }}   {{ line.split()[6] }}
+          {{ line.split()[0] }}   {{ line.split()[1] }}                     {{ line.split()[2] }}/{{ line.split()[3] }}   {{ line.split()[4] }}   {{ line.split()[5] }}   {{ line.split()[6] if line.split() | length > 6 else "" }}
           {% endfor %}
       when: non_running_pods.stdout_lines | length > 1
