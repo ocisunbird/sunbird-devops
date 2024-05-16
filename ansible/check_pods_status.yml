@@ -37,6 +37,6 @@
         msg: |
           NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
           {% for line in non_running_pods.stdout_lines %}
-          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "0" }}/{{ line.split()[2] if line.split()[2] != "<none>" else "0" }}   {{ line.split()[3] }}     {{ line.split()[4] }}          {{ ((ansible_date_time.epoch|int - line.split()[-1] | to_datetime('%Y-%m-%dT%H:%M:%SZ')).days | default(0)) }} days ago
+          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "0" }}/{{ line.split()[2] if line.split()[2] != "<none>" else "0" }}   {{ line.split()[3] }}     {{ line.split()[4] }}          {% if line.split()[-1] | to_datetime('%Y-%m-%dT%H:%M:%SZ', errors='ignore') is defined and ansible_date_time.date | to_datetime('%Y-%m-%d', errors='ignore') is defined %}{{ (ansible_date_time.date | to_datetime('%Y-%m-%d', errors='ignore') - line.split()[-1] | to_datetime('%Y-%m-%dT%H:%M:%SZ', errors='ignore')).days | default(0) }} days ago{% else %}N/A{% endif %}
           {% endfor %}
       when: non_running_pods.stdout_lines | length > 0
