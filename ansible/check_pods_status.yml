@@ -18,5 +18,18 @@
 
     - name: Print Pod Status
       debug:
-        msg: "{{ pod_status_lines | join('\n') }}"
+        msg: |
+          Running Pods:
+          {% for line in pod_status_lines %}
+            {% if "Running" in line %}
+              {{ line }}
+            {% endif %}
+          {% endfor %}
+          
+          Non-Running Pods:
+          {% for line in pod_status_lines %}
+            {% if "Running" not in line %}
+              {{ line }}
+            {% endif %}
+          {% endfor %}
       when: pod_status_lines is defined
