@@ -1,9 +1,14 @@
 - name: Check Pod Status in All Namespaces
   hosts: localhost
-  gather_facts: no
-  environment:
-    KUBECONFIG: "{{ kubeconfig_path }}"
+  gather_facts: yes
   tasks:
+    - name: Define ansible_date_time
+      set_fact:
+        ansible_date_time:
+          epoch: "{{ ansible_date_time.epoch }}"
+          date: "{{ ansible_date_time.date }}"
+          time: "{{ ansible_date_time.time }}"
+
     - name: Check Running Pods in Namespaces
       shell: |
         kubectl get pods -A --field-selector=status.phase=Running -o custom-columns=NAMESPACE:.metadata.namespace,NAME:.metadata.name,READY:.status.replicas,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp --no-headers | sort | uniq
@@ -16,7 +21,7 @@
         msg: |
           NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
           {% for line in running_pods.stdout_lines %}
-          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "0" }}/{{ line.split()[2] if line.split()[2] != "<none>" else "0" }}   {{ line.split()[3] }}     {{ line.split()[4] }}          {{ ((ansible_date_time.epoch|int - line.split()[-1] | to_datetime).days | default(0)) }}d
+          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "0" }}/{{ line.split()[2] if line.split()[2] != "<none>" else "0" }}   {{ line.split()[3] }}     {{ line.split()[4] }}          {{ ((ansible_date_time.epoch|int - line.split()[-1] | to_datetime).days | default(0)) }} days ago
           {% endfor %}
       when: running_pods.stdout_lines | length > 0
 
@@ -32,6 +37,6 @@
         msg: |
           NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
           {% for line in non_running_pods.stdout_lines %}
-          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "0" }}/{{ line.split()[2] if line.split()[2] != "<none>" else "0" }}   {{ line.split()[3] }}     {{ line.split()[4] }}          {{ ((ansible_date_time.epoch|int - line.split()[-1] | to_datetime).days | default(0)) }}d
+          {{ line.split()[0] }}     {{ line.split()[1] }}     {{ line.split()[2] if line.split()[2] != "<none>" else "0" }}/{{ line.split()[2] if line.split()[2] != "<none>" else "0" }}   {{ line.split()[3] }}     {{ line.split()[4] }}          {{ ((ansible_date_time.epoch|int - line.split()[-1] | to_datetime).days | default(0)) }} days ago
           {% endfor %}
       when: non_running_pods.stdout_lines | length > 0
