@@ -7,14 +7,14 @@
       shell: kubectl get pods --all-namespaces
       register: pods_output
 
-    - name: Print Running Pods
+    - name: Format Running Pods Output
       debug:
-        msg: "{{ item }}"
+        msg: "{{ item.split() | join('\t') }}"
       loop: "{{ pods_output.stdout_lines }}"
       when: "'Running' in item"
 
-    - name: Print Non-Running Pods
+    - name: Format Non-Running Pods Output
       debug:
-        msg: "{{ item }}"
+        msg: "{{ item.split() | join('\t') }}"
       loop: "{{ pods_output.stdout_lines }}"
       when: "'Running' not in item"
