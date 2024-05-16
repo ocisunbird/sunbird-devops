@@ -6,31 +6,20 @@
     KUBECONFIG: "{{ kubeconfig_path }}"
   tasks:
     - name: Check Running Pods in Namespaces
-      shell: kubectl get pods -A --field-selector=status.phase=Running -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].ready,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:{{ 'now' | to_date }}-{{ '.metadata.creationTimestamp' | from_date }} --no-headers
+      shell: kubectl get pods -A --field-selector=status.phase=Running -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].ready,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,.metadata.creationTimestamp --no-headers
       register: running_pods
       changed_when: false
       failed_when: false
+
+    - name: Calculate Age
+      set_fact:
+        running_pods_with_age: "{{ running_pods.stdout_lines | map('regex_replace', '^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(.*)$', {'name': '\\1', 'ready': '\\2', 'status': '\\3', 'restarts': '\\4', 'age': ((now() - \\5 | to_datetime).days | int) | string}) | list }}"
 
     - name: Print Running Pods
       debug:
         msg: |
           NAME                                     READY   STATUS    RESTARTS      AGE
-          {% for line in running_pods.stdout_lines %}
-          {{ line.split()[0] }}     {{ line.split()[1] }}/{{ line.split()[1] }}     {{ line.split()[2] }}   {{ line.split()[3] }}             {{ line.split()[4] }}
+          {% for pod in running_pods_with_age %}
+          {{ pod.name }}     {{ pod.ready }}     {{ pod.status }}   {{ pod.restarts }}             {{ pod.age }}d
           {% endfor %}
       when: running_pods.stdout_lines | length > 0
-
-    - name: Check Non-Running Pods in Namespaces
-      shell: kubectl get pods -A --field-selector=status.phase!=Running -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].ready,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:{{ 'now' | to_date }}-{{ '.metadata.creationTimestamp' | from_date }} --no-headers
-      register: non_running_pods
-      changed_when: false
-      failed_when: false
-
-    - name: Print Non-Running Pods
-      debug:
-        msg: |
-          NAME                                     READY   STATUS    RESTARTS      AGE
-          {% for line in non_running_pods.stdout_lines %}
-          {{ line.split()[0] }}     {{ line.split()[1] }}/{{ line.split()[1] }}     {{ line.split()[2] }}   {{ line.split()[3] }}             {{ line.split()[4] }}
-          {% endfor %}
-      when: non_running_pods.stdout_lines | length > 0
