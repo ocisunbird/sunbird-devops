@@ -5,24 +5,18 @@
   environment:
     KUBECONFIG: "{{ kubeconfig_path }}"
   tasks:
-    - name: Check Running Pods in Namespaces
-      shell: kubectl get pods -A --field-selector=status.phase=Running -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].readyReplicas/,.status.replicas,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp
-      register: running_pods
-      changed_when: false
-      failed_when: false
-
-    - name: Print Running Pods
-      debug:
-        var: running_pods.stdout_lines
-      when: running_pods.stdout_lines | length > 1
-
     - name: Check Non-Running Pods in Namespaces
-      shell: kubectl get pods -A --field-selector=status.phase!=Running -o custom-columns=NAME:.metadata.name,READY:.status.containerStatuses[0].readyReplicas/,.status.replicas,STATUS:.status.phase,RESTARTS:.status.containerStatuses[0].restartCount,AGE:.metadata.creationTimestamp
+      shell: kubectl get pods -A | grep -v Running
       register: non_running_pods
       changed_when: false
       failed_when: false
 
+    - name: Parse Non-Running Pods
+      set_fact:
+        non_running_pod_lines: "{{ non_running_pods.stdout_lines }}"
+      when: non_running_pods.stdout_lines | length > 0
+
     - name: Print Non-Running Pods
       debug:
-        var: non_running_pods.stdout_lines
-      when: non_running_pods.stdout_lines | length > 1
+        msg: "{{ non_running_pod_lines | join('\n') }}"
+      when: non_running_pod_lines is defined
