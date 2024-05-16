@@ -16,7 +16,7 @@
         msg: |
           NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
           {% for line in running_pods.stdout_lines %}
-          {{ line.split()[0] }}   {{ line.split()[1] }}   {{ line.split()[2] | default('0') + '/' + line.split()[2] | default('0') }}   {{ line.split()[3] }}   {{ line.split()[4] }}   {{ ((ansible_date_time.epoch | int - line.split()[5] | regex_replace('T.*', '')) / 86400) | int }}d
+          {{ line.split()[0] }}   {{ line.split()[1] }}   {{ line.split()[2] | default('0') }}   {{ line.split()[3] }}   {{ line.split()[4] }}   {{ ((now().strftime('%s') | int - line.split()[5] | regex_replace('T.*', '')) / 86400) | int }}d
           {% endfor %}
       when: running_pods.stdout_lines | length > 0
 
@@ -31,6 +31,6 @@
         msg: |
           NAMESPACE     NAME                                     READY   STATUS    RESTARTS   AGE
           {% for line in non_running_pods.stdout_lines %}
-          {{ line.split()[0] }}   {{ line.split()[1] }}   {{ line.split()[2] | default('0') + '/' + line.split()[2] | default('0') }}   {{ line.split()[3] }}   {{ line.split()[4] }}   {{ ((ansible_date_time.epoch | int - line.split()[5] | regex_replace('T.*', '')) / 86400) | int }}d
+          {{ line.split()[0] }}   {{ line.split()[1] }}   {{ line.split()[2] | default('0') }}   {{ line.split()[3] }}   {{ line.split()[4] }}   {{ ((now().strftime('%s') | int - line.split()[5] | regex_replace('T.*', '')) / 86400) | int }}d
           {% endfor %}
       when: non_running_pods.stdout_lines | length > 0
