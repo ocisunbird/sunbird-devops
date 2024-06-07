@@ -2240,11 +2240,6 @@ var Telemetry = (function() {
                 return
             }
         }
-        // set deviceId for external application
-        if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop'){
-          let deviceid = (new URLSearchParams(curUrlObj.search)).get('did') || '';
-          message.context.did = deviceid;
-        }
         if (telemetryInstance.runningEnv === 'client') {
             if (!message.context.did) {
                 if (!Telemetry.fingerPrintId) {
@@ -2481,17 +2476,23 @@ if (typeof module != 'undefined') {
 }
 
 let pdataId = "";
-if(window.location.origin.indexOf("diksha.gov.in") >= 0){
+let tenantSlug;
+if (window.location.origin.indexOf("diksha.gov.in") >= 0) {
   pdataId = "prod.diksha.portal";
-}else if(window.location.origin.indexOf("staging.ntp.net.in") >= 0){
+} else if (window.location.origin.indexOf("staging.ntp.net.in") >= 0) {
   pdataId = "staging.diksha.portal";
-}else{
+} else if (window.location.origin.indexOf("staging.sunbirded.org") >= 0) {
+  pdataId = "staging.diksha.portal";
+} else if (window.location.origin.indexOf("dev.sunbirded.org") >= 0) {
+  pdataId = "dev.sunbird.portal";
+  tenantSlug = "sunbird";
+} else {
   pdataId = "preprod.diksha.portal";
 }
 
 let curUrlObj = window.location;
 let client_id = (new URLSearchParams(curUrlObj.search)).get('client_id');
-if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop'){
+if(client_id.toLowerCase() === 'android'){
   let pdata = JSON.parse((new URLSearchParams(curUrlObj.search)).get('pdata'));
   if (pdata && pdata['id']) {
     pdataId = pdata['id'];
@@ -2505,7 +2506,7 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
     "telemetry": {
       "pdata": {
         "id": pdataId,
-        "ver": "5.0.0",
+        "ver": "5.1.0",
         "pid": "sunbird-portal"
       }
     }
@@ -2517,7 +2518,7 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
     hostURL = url;
   }
   function OnLoad() {
-    tenantId = sessionStorage.getItem("tenantSlug");
+    tenantId = sessionStorage.getItem("tenantSlug") || tenantSlug;
     getOrgInfo(tenantId).done(function () {
       initTelemetryService();
       logLoginImpressionEvent("init");
@@ -2527,11 +2528,11 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
   function getOrgInfo(id) {
     return $.ajax({
       method: "POST",
-      url: hostURL + "/api/org/v1/search",
+      url: hostURL + "/api/org/v2/search",
       data: JSON.stringify({
         request: {
           filters: {
-            isRootOrg: true,
+            isTenant: true,
             slug: id || 'ntp'
           }
         }
@@ -2555,7 +2556,7 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
       host: hostURL,
       uid: 'anonymous',
       sid: window.uuidv1(),
-      channel: orgInfo.hashTagId,
+      channel: orgInfo && orgInfo.hashTagId,
       env: 'public'
     }
   }
@@ -2570,13 +2571,13 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
     var options = {
       context: {
         env: 'public',
-        channel: orgInfo.hashTagId,
+        channel: orgInfo && orgInfo.hashTagId,
         uid: 'anonymous',
         cdata: [],
-        rollup: getRollupData([orgInfo.hashTagId])
+        rollup: orgInfo && orgInfo.hashTagId && getRollupData([orgInfo.hashTagId])
       },
       object: {},
-      tags: [orgInfo.hashTagId]
+      tags: orgInfo && orgInfo.hashTagId && [orgInfo.hashTagId]
     };
     var edata = {
       type: "view",
@@ -2595,10 +2596,10 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
         channel: orgInfo.hashTagId,
         uid: 'anonymous',
         cdata: [],
-        rollup: getRollupData([orgInfo.hashTagId])
+        rollup: orgInfo && orgInfo.hashTagId && getRollupData([orgInfo.hashTagId])
       },
       object: {},
-      tags: [orgInfo.hashTagId]
+      tags: orgInfo && orgInfo.hashTagId && [orgInfo.hashTagId]
     };
     var edata = {
       id: interactid,
@@ -2624,6 +2625,13 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
       $("#kc-form-login").submit();
     }, 500);
     return false;
+  }
+
+  function clearSession () {
+   return $.ajax({
+      method: "GET",
+      url: hostURL + "/logoff"
+    }).done(function (response) {});
   }
 
   $("body").ready(function ($) {
@@ -2679,7 +2687,6 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
   function stringToHTML(str) {
     let parser = new DOMParser();
     let doc = parser.parseFromString(str, 'text/html');
-    console.log('Doc parse => ', doc); // TODO: log!
     return doc?.body?.innerText || document.createElement('body');
   }
 
@@ -2707,68 +2714,7 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
     }
     addVersionToURL(version);
     toggleGoogleSignInBtn();
-//new code added 30 May 2024
-// This change for disable the error messages security vunerability.
 
-  // decryption (server side - keycloak)
-  var success_message = (new URLSearchParams(window.location.search)).get('success_message'); // encoded params getting here
-  var error_message = (new URLSearchParams(window.location.search)).get('error_message');
-
-  console.log('before success_message parse => ', success_message); // TODO: log!
-
-  let dynamicKey = Math.random().toString(36).substring(2, 15);
-  let decodedValue = '';
-  let data;
-  try {
-    decodedValue =  success_message ?  atob(success_message) :  atob(error_message); 
-    let firstDynamicKey = decodedValue?.split('value')[0]?.trim();
-    let secondDynamicKey = decodedValue?.split('value')[1]?.split('second')[1]?.trim();
-    let messageValue = decodedValue?.split('value')[1]?.split('second')[0];
-
-    console.log("firstDynamicKey", firstDynamicKey)
-    console.log("secondDynamicKey", secondDynamicKey);
-    console.log("messageValue", messageValue);
-
-
-    if (firstDynamicKey == secondDynamicKey) {
-
-      data = {
-        [dynamicKey]: messageValue
-      }
-      console.log("working");
-    } else {
-      data = {
-        success_message: ""
-      }
-    }
-    console.log("data....", data);
-    console.log("original message", data[[dynamicKey]] || "");
-  } catch (error) {
-    decodedValue = '';
-    console.log("not a valid value", decodedValue)
-  }
-
-  if (success_message && data[[dynamicKey]]) data[[dynamicKey]] = stringToHTML(data[[dynamicKey]]);
-  if (error_message && data[[dynamicKey]]) data[[dynamicKey]] = stringToHTML(data[[dynamicKey]]);
-
-  console.log('after message parse => ', data[[dynamicKey]]); // TODO: log!`
-
-  if (success_message && data[[dynamicKey]]) {
-    var success_msg = document.getElementById("success-msg");
-    success_msg.className = success_msg.className.replace("hide", "");
-    success_msg.innerHTML = data[[dynamicKey]] || "";
-  }
-
-  else if (error_message && data[[dynamicKey]]) {
-    var error_msg = document.getElementById('error-msg');
-    error_msg.className = error_msg.className.replace("hide", "");
-    error_msg.innerHTML = data[[dynamicKey]] || "";
-  }
-  
-
- //new code added 30 May 2024 end
-
-	  /*
     var error_message = (new URLSearchParams(window.location.search)).get('error_message');
     console.log('before error_message parse => ', error_message); // TODO: log!
     if (error_message) error_message = stringToHTML(error_message);
@@ -2787,7 +2733,7 @@ if(client_id.toLowerCase() === 'android' || client_id.toLowerCase() === 'desktop
         var success_msg = document.getElementById("success-msg");
         success_msg.className = success_msg.className.replace("hide","");
         success_msg.innerHTML = success_message;
-    } */
+    }
     if (version >= 4) {
         var forgotElement = document.getElementById("fgtPortalFlow");
         if(forgotElement){
@@ -2985,12 +2931,12 @@ var addVersionToURL = function (version){
       logInteractEvent("reset-password-submit");
       logLoginImpressionEvent("pageexit");
     }
-    if(otpForm!==null){
-      logInteractEvent("otp-submit");
-      logLoginImpressionEvent("pageexit");
-    }
     if(resetPswUpdateForm!==null){
       logInteractEvent("reset-password-update");
+      logLoginImpressionEvent("pageexit");
+    }
+    if(otpForm!==null){
+      logInteractEvent("otp-submit");
       logLoginImpressionEvent("pageexit");
     }
     var containerElement = document.getElementById('kc-form');
@@ -3125,7 +3071,7 @@ var forgetPassword = (redirectUrlPath) => {
         const updatedQuery = sessionUrlObj.search + '&error_callback=' + sessionUrlObj.href.split('?')[0];
         if (redirect_uri) {
             const redirect_uriLocation = new URL(redirect_uri);
-            if(client_id === 'android' || client_id === 'desktop'){
+          if (client_id === 'android' || client_id === 'desktop') {
                 window.location.href = sessionUrlObj.protocol + '//' + sessionUrlObj.host + redirectUrlPath + updatedQuery;
             }
             else{
@@ -3230,7 +3176,7 @@ var redirectToPortal = (redirectUrlPath) => { // redirectUrlPath for sso and sel
                 window.location.href = sessionUrlObj.protocol + '//' + sessionUrlObj.host + redirectUrlPath + updatedQuery;
             } else if(client_id === 'portal' && 
             redirectUrlPath === '/sign-in/sso/select-org' && 
-            (redirect_uri.includes('dock.preprod') || redirect_uri.includes('vdn.diksha'))) {
+            (redirect_uri.includes('dock.sunbirded.org') || redirect_uri.includes('dockstaging.sunbirded.org'))) {
                 window.location.href = sessionUrlObj.protocol + '//' + sessionUrlObj.host + redirectUrlPath + updatedQuery;
             } else {
                 window.location.href = redirect_uriLocation.protocol + '//' + redirect_uriLocation.host +
@@ -3284,11 +3230,19 @@ var matchPassword = () => {
 	});
 }
 
-var isIOS = function (userAgent = (navigator.userAgent || navigator.vendor || window.opera)) {
+var backToApplication = () => {
+	var redirect_uri = getValueFromSession('redirect_uri');
+	if (redirect_uri) {
+		var updatedQuery = redirect_uri.split('?')[0];
+		window.location.href = updatedQuery;
+	}
+}
+
+var isIOS = function(userAgent = (navigator.userAgent || navigator.vendor || window.opera)){
   return /iPad|iPhone|iPod/.test(userAgent);
 }
 
-const toggleGoogleSignInBtn = function () {
+const toggleGoogleSignInBtn = function(){
   const googleSignInBtnElement = document.getElementById("googleSignInBtn");
   const client_id = (new URLSearchParams(window.location.search)).get('client_id');
   const hideGoogleSignInBtn = (googleSignInBtnElement && client_id && isIOS() && ['android', 'ios'].includes(client_id.toLowerCase()));
