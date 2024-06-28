@@ -58,23 +58,22 @@ def email_notify() {
     // Execute the Ansible playbook and capture its output
     def ansibleOutput = sh(script: 'ansible-playbook /var/lib/jenkins/workspace/OpsAdministration/production/Core/Kafka_Lag_Monitoring/ansible/kafka_lags_monitoring.yml', returnStdout: true).trim()
 
-    // Strip ANSI escape codes from the output
-    // ansibleOutput = ansibleOutput.replaceAll(/\u001B\[[0-9;]*m/, '')
+    // Write ansibleOutput to a temporary file
+    def tempLogFile = "${env.WORKSPACE}/ansible_output.log"
+    writeFile file: tempLogFile, text: ansibleOutput
 
-    // Send email notification using the built-in 'mail' step
-    mail (
-        subject: 'Jenkins Kafka_Lag_Monitoring Pipeline Status',
-        body: """
-        $JOB_NAME - Pipeline ${currentBuild.result}.
+    // Send email notification with the Ansible output attached
+    emailext body: """
+        $JOB_NAME - Pipeline ${currentBuild.currentResult}.
         
         Build Number: $buildNumber
         Job URL: $jobUrl
         
-        Ansible Playbook Output:
-        ${ansibleOutput}
+        Ansible Playbook Output is attached.
         
         This is an email from the Prod Jenkins pipeline.
         """,
-        to: 'alertsdiksha@trigyn.com'
-    )
+        subject: 'Jenkins Kafka_Lag_Monitoring Pipeline Status',
+        to: 'alertsdiksha@trigyn.com',
+        attachmentsPattern: "${tempLogFile}"
 }
