@@ -61,6 +61,9 @@ def email_notify() {
     // Strip ANSI escape codes from the output
     ansibleOutput = ansibleOutput.replaceAll(/\u001B\[[0-9;]*m/, '')
 
+    // Write the output to a file
+    writeFile file: 'ansible_output.txt', text: ansibleOutput
+
     // Send email notification using the built-in 'mail' step
     mail (
         subject: 'Jenkins Kafka_Lag_Monitoring Pipeline Status',
@@ -70,11 +73,11 @@ def email_notify() {
         Build Number: $buildNumber
         Job URL: $jobUrl
         
-        Ansible Playbook Output:
-        ${ansibleOutput}
+        The detailed Ansible Playbook output is attached.
         
         This is an email from the Prod Jenkins pipeline.
         """,
-        to: 'alertsdiksha@trigyn.com'
+        to: 'alertsdiksha@trigyn.com',
+        attachmentsPattern: 'Kafka_Lag_Monitoring_output.txt'
     )
 }
