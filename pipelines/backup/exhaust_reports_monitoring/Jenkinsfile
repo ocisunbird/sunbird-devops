@@ -55,7 +55,7 @@ def email_notify() {
     def jobUrl = env.JOB_URL
 
     // Execute the Ansible playbook and capture its output
-    def ansibleOutput = sh(script: 'ansible-playbook /var/lib/jenkins/workspace/OpsAdministration/production/Core/Exhaust_Reports_Monitoring/ansible exhaust_reports_monitoring.yml', returnStdout: true).trim()
+    def ansibleOutput = sh(script: 'ansible-playbook /var/lib/jenkins/workspace/OpsAdministration/production/Core/Exhaust_Reports_Monitoring/ansible/exhaust_reports_monitoring.yml', returnStdout: true).trim()
 
     // Strip ANSI escape codes from the output
     ansibleOutput = ansibleOutput.replaceAll(/\u001B\[[0-9;]*m/, '')
