@@ -62,22 +62,24 @@ def email_notify() {
     ansibleOutput = ansibleOutput.replaceAll(/\u001B\[[0-9;]*m/, '')
 
     // Write the output to a file
-    writeFile file: 'ansible_output.txt', text: ansibleOutput
+    def outputFilePath = "${env.WORKSPACE}/Kafka_Lag_Monitoring_output.txt"
+    writeFile file: outputFilePath, text: ansibleOutput
 
-    // Send email notification using the built-in 'mail' step
-    mail (
+    // Send email notification using the built-in 'emailext' step
+    emailext (
         subject: 'Jenkins Kafka_Lag_Monitoring Pipeline Status',
         body: """
-        $JOB_NAME - Pipeline ${currentBuild.result}.
+        ${env.JOB_NAME} - Pipeline ${currentBuild.result}.
         
-        Build Number: $buildNumber
-        Job URL: $jobUrl
+        Build Number: ${buildNumber}
+        Job URL: ${jobUrl}
         
         The detailed Ansible Playbook output is attached.
         
         This is an email from the Prod Jenkins pipeline.
         """,
         to: 'alertsdiksha@trigyn.com',
+        attachLog: true,
         attachmentsPattern: 'Kafka_Lag_Monitoring_output.txt'
     )
 }
