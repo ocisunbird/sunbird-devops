@@ -11431,7 +11431,7 @@ kong_apis:
     config.required: false
     config.enabled: false
 
-  - name: chatBookSave
+- name: chatBookSave
   uris: "chat-with-books/v1/save"
   upstream_url: "{{ learning_service_url }}/v1/chat-with-books/save"
   strip_uri: true
@@ -11453,7 +11453,7 @@ kong_apis:
     config.enabled: true
 
 
-    - name: chatBookRead
+  - name: chatBookRead
     uris: "chat-with-books/v1/read"
     upstream_url: "{{ learning_service_url }}/v1/chat-with-books/read"
     strip_uri: true
@@ -11473,4 +11473,3 @@ kong_apis:
     - name: opa-checks
       config.required: true
       config.enabled: true
-    
