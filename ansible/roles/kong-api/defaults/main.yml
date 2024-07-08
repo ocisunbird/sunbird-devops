@@ -11441,7 +11441,27 @@ kong_apis:
   - "{{ statsd_pulgin }}"
   - name: acl
     config.whitelist:
-    - appAccess
+      - appAccess
+  - name: rate-limiting
+    config.policy: local
+    config.hour: "{{ medium_rate_limit_per_hour }}"
+    config.limit_by: credential
+  - name: request-size-limiting
+    config.allowed_payload_size: "{{ small_request_size_limit }}"
+  - name: opa-checks
+    config.required: false
+    config.enabled: false
+- name: chatBookRead
+  uris: "/v1/chat-with-books/read"
+  upstream_url: "{{ learning_service_url }}/chat-with-books/v1/read"
+  strip_uri: true
+  plugins:
+  - name: jwt
+  - name: cors
+  - "{{ statsd_pulgin }}"
+  - name: acl
+    config.whitelist:
+      - appAccess
   - name: rate-limiting
     config.policy: local
     config.hour: "{{ medium_rate_limit_per_hour }}"
@@ -11451,25 +11471,3 @@ kong_apis:
   - name: opa-checks
     config.required: true
     config.enabled: true
-
-
-  - name: chatBookRead
-    uris: "{{ user_service_prefix }}/v1/chatwithbooks/read"
-    upstream_url: "{{ learning_service_url }}/chatwithbooks/v1/read"
-    strip_uri: true
-    plugins:
-    - name: jwt
-    - name: cors
-    - "{{ statsd_pulgin }}"
-    - name: acl
-      config.whitelist:
-      - appAccess
-    - name: rate-limiting
-      config.policy: local
-      config.hour: "{{ medium_rate_limit_per_hour }}"
-      config.limit_by: credential
-    - name: request-size-limiting
-      config.allowed_payload_size: "{{ small_request_size_limit }}"
-    - name: opa-checks
-      config.required: true
-      config.enabled: true
