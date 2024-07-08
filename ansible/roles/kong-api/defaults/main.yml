@@ -11452,7 +11452,7 @@ kong_apis:
     config.required: false
     config.enabled: false
 - name: chatBookRead
-  uris: "/v1/chat-with-books/read"
+  uris: "{{ user_service_prefix }/v1/chat-with-books/read"
   upstream_url: "{{ learning_service_url }}/chat-with-books/v1/read"
   strip_uri: true
   plugins:
