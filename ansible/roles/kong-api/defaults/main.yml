@@ -11432,8 +11432,8 @@ kong_apis:
     config.enabled: false
 
 - name: chatBookSave
-  uris: "{{ user_service_prefix }}/v1/chatwithbooks/save"
-  upstream_url: "{{ learning_service_url }}/chatwithbooks/v1/save"
+  uris: "{{ user_service_prefix }}/v1/chatWithBooks/save"
+  upstream_url: "{{ learning_service_url }}/chatWithBooks/v1/save"
   strip_uri: true
   plugins:
   - name: jwt
@@ -11452,8 +11452,8 @@ kong_apis:
     config.required: false
     config.enabled: false
 - name: chatBookRead
-  uris: "{{ user_service_prefix }}/v1/chat-with-books/read"
-  upstream_url: "{{ learning_service_url }}/chat-with-books/v1/read"
+  uris: "{{ user_service_prefix }}/v1/chatWithBooks/read"
+  upstream_url: "{{ learning_service_url }}/chatWithBooks/v1/read"
   strip_uri: true
   plugins:
   - name: jwt
