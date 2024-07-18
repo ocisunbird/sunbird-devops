@@ -2715,60 +2715,25 @@ if(client_id.toLowerCase() === 'android'){
     addVersionToURL(version);
     toggleGoogleSignInBtn();
 
-  // decryption (server side - keycloak)
-  var success_message = (new URLSearchParams(window.location.search)).get('success_message'); // encoded params getting here
-  var error_message = (new URLSearchParams(window.location.search)).get('error_message');
+    var error_message = (new URLSearchParams(window.location.search)).get('error_message');
+    //console.log('before error_message parse => ', error_message); // TODO: log!
+    if (error_message) error_message = stringToHTML(error_message);
+    //console.log('after error_message parse => ', error_message); // TODO: log!`
 
-  console.log('before success_message parse => ', success_message); // TODO: log!
+    var success_message = (new URLSearchParams(window.location.search)).get('success_message');
+    //console.log('before success_message parse => ', success_message); // TODO: log!
+    if (success_message) success_message = stringToHTML(success_message);
+    //console.log('after success_message parse => ', success_message); // TODO: log!`
 
-  let dynamicKey = Math.random().toString(36).substring(2, 15);
-  let decodedValue = '';
-  let data;
-  try {
-    decodedValue =  success_message ?  atob(success_message) :  atob(error_message); 
-    let firstDynamicKey = decodedValue?.split('value')[0]?.trim();
-    let secondDynamicKey = decodedValue?.split('value')[1]?.split('second')[1]?.trim();
-    let messageValue = decodedValue?.split('value')[1]?.split('second')[0];
-
-    console.log("firstDynamicKey", firstDynamicKey)
-    console.log("secondDynamicKey", secondDynamicKey);
-    console.log("messageValue", messageValue);
-
-
-    if (firstDynamicKey == secondDynamicKey) {
-
-      data = {
-        [dynamicKey]: messageValue
-      }
-      console.log("working");
-    } else {
-      data = {
-        success_message: ""
-      }
+    if(error_message){
+        var error_msg = document.getElementById('error-msg');
+        error_msg.className = error_msg.className.replace("hide","");
+        error_msg.innerHTML = error_message;
+    }else if(success_message){
+        var success_msg = document.getElementById("success-msg");
+        success_msg.className = success_msg.className.replace("hide","");
+        success_msg.innerHTML = success_message;
     }
-    console.log("data....", data);
-    console.log("original message", data[[dynamicKey]] || "");
-  } catch (error) {
-    decodedValue = '';
-    console.log("not a valid value", decodedValue)
-  }
-
-  if (success_message && data[[dynamicKey]]) data[[dynamicKey]] = stringToHTML(data[[dynamicKey]]);
-  if (error_message && data[[dynamicKey]]) data[[dynamicKey]] = stringToHTML(data[[dynamicKey]]);
-
-  console.log('after message parse => ', data[[dynamicKey]]); // TODO: log!`
-
-  if (success_message && data[[dynamicKey]]) {
-    var success_msg = document.getElementById("success-msg");
-    success_msg.className = success_msg.className.replace("hide", "");
-    success_msg.innerHTML = data[[dynamicKey]] || "";
-  }
-
-  else if (error_message && data[[dynamicKey]]) {
-    var error_msg = document.getElementById('error-msg');
-    error_msg.className = error_msg.className.replace("hide", "");
-    error_msg.innerHTML = data[[dynamicKey]] || "";
-  }
     if (version >= 4) {
         var forgotElement = document.getElementById("fgtPortalFlow");
         if(forgotElement){
