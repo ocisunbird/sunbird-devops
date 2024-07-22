@@ -2724,7 +2724,7 @@ kong_apis:
     config.enabled: false
 
 - name: readContentwithJWT
-  uris: "testingcontent/v1/read"
+  uris: "/testingcontent/v1/read"
   upstream_url: "{{ knowledge_mw_service_url }}/v1/content/read"
   strip_uri: true
   plugins:
@@ -2743,7 +2743,7 @@ kong_apis:
   - name: opa-checks
     config.required: false
     config.enabled: false
-    
+
 - name: contentPrivateRead
   uris: "{{ content_prefix }}/v1/private/read"
   upstream_url: "{{ content_service_url }}/content/v4/private/read"
