@@ -1,0 +1,18 @@
+- name: Run copy_DruidContentIndexer.sh and Print Output
+  hosts: localhost  # Adjust to the appropriate target host(s)
+  become: yes  # Use sudo to execute tasks
+  tasks:
+    - name: Run copy_DruidContentIndexer.sh and capture output
+      shell: "/mount/data/analytics/etl_druid_content_indexer/copy_DruidContentIndexer.sh"
+      register: script_output
+      args:
+        warn: false  # Suppress warnings in the output
+
+    - name: Check script execution status
+      fail:
+        msg: "Script execution failed with return code {{ script_output.rc }}"
+      when: script_output.rc != 0
+
+    - name: Print script output
+      debug:
+        msg: "{{ script_output.stdout }}"
