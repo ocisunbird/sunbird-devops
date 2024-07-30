@@ -1,31 +1,8 @@
 - name: Run copy_DruidContentIndexer.sh and Print Output
-  hosts: spark  # Adjust to the appropriate target host(s)
+  hosts: localhost  # Adjust to the appropriate target host(s)
   become: yes  # Use sudo to execute tasks
   become_user: root
   tasks:
-    - name: Print environment variables
-      command: printenv
-      register: env_output
-
-    - debug:
-        var: env_output.stdout_lines
-
-    - name: Ensure the script is present and executable
-      stat:
-        path: /mount/data/analytics/etl_druid_content_indexer/copy_DruidContentIndexer.sh
-      register: script_file
-
-    - name: Fail if script is not present
-      fail:
-        msg: "Script not found at /mount/data/analytics/etl_druid_content_indexer/copy_DruidContentIndexer.sh"
-      when: not script_file.stat.exists
-
-    - name: Ensure script is executable
-      file:
-        path: /mount/data/analytics/etl_druid_content_indexer/copy_DruidContentIndexer.sh
-        mode: '0755'
-      when: script_file.stat.exists
-
     - name: Run copy_DruidContentIndexer.sh and capture output
       shell: "/mount/data/analytics/etl_druid_content_indexer/copy_DruidContentIndexer.sh"
       register: script_output
