@@ -3,6 +3,16 @@
   become: yes  # Use sudo to execute tasks
   become_user: root
   tasks:
+    - name: Ensure pip is installed
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Install OCI module
+      pip:
+        name: oci
+        state: present
+
     - name: Run copy_DruidContentIndexer.sh and capture output
       shell: "/mount/data/analytics/etl_druid_content_indexer/copy_DruidContentIndexer.sh"
       register: script_output
