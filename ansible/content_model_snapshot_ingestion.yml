@@ -1,5 +1,5 @@
 - name: Run copy_DruidContentIndexer.sh and Print Output
-  hosts: localhost  # Adjust to the appropriate target host(s)
+  hosts: spark  # Adjust to the appropriate target host(s)
   become: yes  # Use sudo to execute tasks
   become_user: root
   tasks:
