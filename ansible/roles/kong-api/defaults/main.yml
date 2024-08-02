@@ -11512,3 +11512,19 @@ kong_apis:
   - name: opa-checks
     config.required: false
     config.enabled: false
+- name: adaptiveAssessmnet
+  uris: "/pal"
+  upstream_url: "http://10.50.15.99:8080"
+  strip_uri: true
+  plugins:
+  - name: cors
+  - "{{ statsd_pulgin }}"
+  - name: acl
+    config.whitelist:
+    - userAccess
+  - name: rate-limiting
+    config.policy: local
+    config.hour: "{{ medium_rate_limit_per_hour }}"
+    config.limit_by: credential
+  - name: request-size-limiting
+    config.allowed_payload_size: "{{ small_request_size_limit }}"
