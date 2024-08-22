@@ -35,6 +35,12 @@
           "name":"schema:Text"
         }
       },
+      "courseDuration":{
+        "@id":"https://raw.githubusercontent.com/project-sunbird/sunbird-devops/release-4.8.0/kubernetes/helm_charts/sunbird-RC/registry/templates/READ.md#courseDuration",
+        "@context": {
+          "name":"schema:Text"
+        }
+      },      
       "publicKey":{
         "@id":"https://raw.githubusercontent.com/project-sunbird/sunbird-devops/release-4.8.0/kubernetes/helm_charts/sunbird-RC/registry/templates/READ.md#publicKey",
         "@context": {
