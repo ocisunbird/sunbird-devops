@@ -32,22 +32,33 @@
 
 - meta: flush_handlers
 
-- name: Install dependencies for keycloak
-  apt:
-    name: ["python-setuptools"]
-    update_cache: true
+# force to use python2 as a possible workaround
+# - name: Install dependencies for keycloak
+#   apt:
+#     name: ["python-setuptools"]
+#     update_cache: true
+#
+# - name: Ensure python packages are installed
+#   apt: 
+#     name: ["python-pip", "python-dev"]
+#     update_cache: yes
+#   when: ansible_os_family == 'Debian' and ansible_distribution_version | float < 18
+#
+# - name: Ensure python packages are installed
+#   apt:
+#     name: ["python3-pip", "python3-dev"]
+#     update_cache: yes
+#  when: ansible_os_family == 'Debian' and ansible_distribution_version | float > 18
+#
+#- name: Install dependencies for keycloak (python2)
+#  apt:
+#    name: "{{ item }}"
+#    update_cache: true
+#  with_items:
+#    - python-pip
+#    - python-setuptools
+#  run_once: true
 
-- name: Ensure python packages are installed
-  apt: 
-    name: ["python-pip", "python-dev"]
-    update_cache: yes
-  when: ansible_os_family == 'Debian' and ansible_distribution_version | float < 18
-
-- name: Ensure python packages are installed
-  apt:
-    name: ["python3-pip", "python3-dev"]
-    update_cache: yes
-  when: ansible_os_family == 'Debian' and ansible_distribution_version | float > 18
 
 - name: Copying python libraries
   copy:
@@ -55,7 +66,7 @@
     dest: /tmp/
 
 - name: Initialize python library to run keycloak bootstrap script
-  shell: cd /tmp/python-keycloak-0.12.0 && python setup.py install
+  shell: cd /tmp/python-keycloak-0.12.0 &&  /usr/bin/python2 setup.py install
 
 - name: Save keycloak vars to json
   template:
@@ -81,7 +92,7 @@
     dest: /tmp
 
 - name: Run the keycloak bootstrap script
-  shell: cd /tmp/keycloak/ && python keycloak_main.py /tmp/keycloak-bootstrap.conf.json
+  shell: cd /tmp/keycloak/ &&  /usr/bin/python2 keycloak_main.py /tmp/keycloak-bootstrap.conf.json
   register: out
   until: '"404" not in out.stderr'
   retries: 2
